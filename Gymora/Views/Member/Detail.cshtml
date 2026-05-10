@@ -1,0 +1,182 @@
+@model MemberDetailViewModel
+@{
+    ViewData["Title"] = Model.FullName;
+    var planTotalDays = (Model.PlanStartDate.HasValue && Model.PlanExpiryDate.HasValue)
+        ? Math.Max(1, (Model.PlanExpiryDate.Value.Date - Model.PlanStartDate.Value.Date).Days)
+        : (int?)null;
+    var daysLeft = Model.PlanExpiryDate.HasValue
+        ? (Model.PlanExpiryDate.Value.Date - DateTime.Today).Days
+        : (int?)null;
+    double remainingBarPct = 0;
+    if (planTotalDays.HasValue && daysLeft.HasValue)
+    {
+        remainingBarPct = daysLeft.Value <= 0
+            ? 0
+            : Math.Clamp(100.0 * daysLeft.Value / planTotalDays.Value, 0, 100);
+    }
+}
+
+<div class="mb-3">
+    <a asp-controller="Member" asp-action="Index" class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-2" style="padding:8px 14px;font-size:13px;">
+        <i class="bi bi-arrow-left"></i> Back to Members
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="gymora-card h-100">
+            <div class="text-center mb-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3"
+                     style="width:80px;height:80px;background:#E16349;color:#FFFFFF;font-size:28px;font-weight:700;">
+                    @Model.Initials
+                </div>
+                <div class="text-white mb-2" style="font-size:20px;font-weight:700;">@Model.FullName</div>
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-2">
+                    <span class="gymora-badge @(Model.IsActive ? "success" : "danger")">
+                        @(Model.IsActive ? "Active" : "Inactive")
+                    </span>
+                    <span class="gymora-badge muted">@(Model.Role ?? "Member")</span>
+                </div>
+            </div>
+            <hr style="border-color:#2E2E2E;margin:16px 0;opacity:1;" />
+
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex gap-3 align-items-start">
+                    <i class="bi bi-envelope flex-shrink-0" style="color:#9A9A9A;font-size:18px;"></i>
+                    <div class="min-w-0">
+                        <div style="font-size:11px;color:#9A9A9A;">Email</div>
+                        <div style="font-size:14px;color:#FFFFFF;">@Model.Email</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <i class="bi bi-phone flex-shrink-0" style="color:#9A9A9A;font-size:18px;"></i>
+                    <div class="min-w-0">
+                        <div style="font-size:11px;color:#9A9A9A;">Phone</div>
+                        <div style="font-size:14px;color:#FFFFFF;">@(Model.PhoneNumber ?? "—")</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <i class="bi bi-calendar flex-shrink-0" style="color:#9A9A9A;font-size:18px;"></i>
+                    <div class="min-w-0">
+                        <div style="font-size:11px;color:#9A9A9A;">Join Date</div>
+                        <div style="font-size:14px;color:#FFFFFF;">@(Model.JoinDate.HasValue ? Model.JoinDate.Value.ToString("MMM dd, yyyy") : "—")</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <i class="bi bi-person flex-shrink-0" style="color:#9A9A9A;font-size:18px;"></i>
+                    <div class="min-w-0">
+                        <div style="font-size:11px;color:#9A9A9A;">Gender</div>
+                        <div style="font-size:14px;color:#FFFFFF;">@(Model.Gender ?? "—")</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <i class="bi bi-geo-alt flex-shrink-0" style="color:#9A9A9A;font-size:18px;"></i>
+                    <div class="min-w-0">
+                        <div style="font-size:11px;color:#9A9A9A;">Address</div>
+                        <div style="font-size:14px;color:#FFFFFF;">@(Model.Address ?? "—")</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column gap-2 mt-4">
+                <a asp-controller="Member" asp-action="Edit" asp-route-id="@Model.Id"
+                   class="gymora-btn-primary text-decoration-none d-inline-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                @if (User.IsInRole("GymOwner") && Model.IsActive)
+                {
+                    <form asp-controller="Member" asp-action="Deactivate" asp-route-id="@Model.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="gymora-btn-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
+                                onclick="return confirm('Are you sure you want to deactivate this member?');">
+                            <i class="bi bi-person-x-fill"></i> Deactivate
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="gymora-card mb-4">
+            <div class="gymora-card-title mb-3">Personal Details</div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div style="font-size:11px;color:#9A9A9A;">Date of Birth</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.DateOfBirth.HasValue ? Model.DateOfBirth.Value.ToString("MMM dd, yyyy") : "—")</div>
+                </div>
+                <div class="col-md-4">
+                    <div style="font-size:11px;color:#9A9A9A;">CNIC</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.CNIC ?? "—")</div>
+                </div>
+                <div class="col-md-4">
+                    <div style="font-size:11px;color:#9A9A9A;">Emergency Contact</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.EmergencyContact ?? "—")</div>
+                </div>
+                <div class="col-md-6">
+                    <div style="font-size:11px;color:#9A9A9A;">Health Conditions</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.HealthConditions ?? "—")</div>
+                </div>
+                <div class="col-md-6">
+                    <div style="font-size:11px;color:#9A9A9A;">Fitness Goals</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.FitnessGoals ?? "—")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gymora-card">
+            <div class="gymora-card-title mb-3">Membership Info</div>
+
+            <div class="mb-3">
+                <div style="font-size:11px;color:#9A9A9A;" class="mb-1">Current Plan</div>
+                <span style="display:inline-flex;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(225,99,73,0.15);color:#E16349;">
+                    @(Model.CurrentPlanName ?? "No Plan")
+                </span>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6">
+                    <div style="font-size:11px;color:#9A9A9A;">Plan Start</div>
+                    <div style="font-size:14px;color:#FFFFFF;">@(Model.PlanStartDate.HasValue ? Model.PlanStartDate.Value.ToString("MMM dd, yyyy") : "—")</div>
+                </div>
+                <div class="col-sm-6">
+                    <div style="font-size:11px;color:#9A9A9A;">Plan Expiry</div>
+                    @{
+                        var expiryRed = Model.PlanExpiryDate.HasValue && Model.PlanExpiryDate.Value.Date < DateTime.Today;
+                    }
+                    <div style="font-size:14px;color:@(expiryRed ? "#E05252" : "#FFFFFF");">
+                        @(Model.PlanExpiryDate.HasValue ? Model.PlanExpiryDate.Value.ToString("MMM dd, yyyy") : "—")
+                    </div>
+                </div>
+            </div>
+
+            <div style="font-size:11px;color:#9A9A9A;" class="mb-1">Membership period</div>
+            @if (daysLeft.HasValue && Model.PlanExpiryDate.HasValue)
+            {
+                @if (daysLeft.Value < 0)
+                {
+                    <div style="font-size:13px;color:#E05252;" class="mb-2">Expired @Math.Abs(daysLeft.Value) day(s) ago</div>
+                }
+                else if (daysLeft.Value == 0)
+                {
+                    <div style="font-size:13px;color:#E16349;" class="mb-2">Expires today</div>
+                }
+                else
+                {
+                    <div style="font-size:13px;color:#FFFFFF;" class="mb-2">@daysLeft.Value day(s) remaining</div>
+                }
+                <div style="height:8px;border-radius:999px;background:#1E1E1E;border:1px solid #2E2E2E;overflow:hidden;">
+                    <div style="height:100%;width:@(remainingBarPct.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%;background:#E16349;border-radius:999px;transition:width 0.3s ease;"></div>
+                </div>
+                @if (planTotalDays.HasValue)
+                {
+                    <div style="font-size:11px;color:#9A9A9A;" class="mt-1">@(planTotalDays.Value)-day plan window</div>
+                }
+            }
+            else
+            {
+                <div style="font-size:14px;color:#FFFFFF;">—</div>
+            }
+        </div>
+    </div>
+</div>

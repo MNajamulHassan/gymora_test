@@ -1,0 +1,572 @@
+/* ============================================================
+   Gymora — Complete Dark Theme
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --gymora-bg: #18181A;
+  --gymora-surface: #252525;
+  --gymora-surface-2: #343434;
+  --gymora-border: #2E2E2E;
+  --gymora-primary: #E16349;
+  --gymora-primary-dim: rgba(225,99,73,0.15);
+  --gymora-secondary: #B7F072;
+  --gymora-secondary-dim: rgba(183,240,114,0.15);
+  --gymora-text: #FFFFFF;
+  --gymora-muted: #9A9A9A;
+  --gymora-danger: #E05252;
+  --gymora-input-bg: #1E1E1E;
+}
+
+/* ── Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  background: var(--gymora-bg);
+  color: var(--gymora-text);
+}
+
+a { text-decoration: none; }
+
+/* ── Layout ── */
+.gymora-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.gymora-sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--gymora-bg);
+  border-right: 1px solid var(--gymora-border);
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.gymora-logo {
+  padding: 0 20px 24px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gymora-text);
+  border-bottom: 1px solid var(--gymora-border);
+  margin-bottom: 8px;
+}
+
+.gymora-logo span { color: var(--gymora-primary); }
+
+.gymora-nav-section-label {
+  font-size: 10px;
+  color: var(--gymora-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px 20px 8px;
+  font-weight: 600;
+}
+
+.gymora-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: var(--gymora-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.gymora-nav-link:hover {
+  color: var(--gymora-text);
+  background: rgba(255,255,255,0.05);
+}
+
+.gymora-nav-link.active {
+  color: var(--gymora-text);
+  background: rgba(225,99,73,0.12);
+  border-left: 3px solid var(--gymora-primary);
+}
+
+.gymora-nav-link i { font-size: 18px; }
+
+.gymora-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 16px;
+  padding: 10px 16px;
+  background: var(--gymora-primary);
+  color: #FFFFFF;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.gymora-nav-cta:hover { background: #c8533a; color: #fff; }
+
+/* ── Main Area ── */
+.gymora-main {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100vh;
+  background: var(--gymora-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Topbar ── */
+.gymora-topbar {
+  height: 60px;
+  background: var(--gymora-bg);
+  border-bottom: 1px solid var(--gymora-border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.gymora-topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gymora-text);
+  flex: 1;
+}
+
+.gymora-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gymora-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gymora-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+/* ── Content ── */
+.gymora-content {
+  padding: 24px;
+  flex: 1;
+}
+
+/* ── Cards ── */
+.gymora-card {
+  background: var(--gymora-surface);
+  border: 1px solid var(--gymora-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.gymora-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.gymora-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gymora-text);
+}
+
+/* ── Stat Cards ── */
+.gymora-stat-val {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gymora-text);
+  margin: 8px 0 4px;
+}
+
+.gymora-stat-label {
+  font-size: 12px;
+  color: var(--gymora-muted);
+}
+
+.gymora-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.gymora-stat-icon.income  { background: var(--gymora-secondary-dim); color: var(--gymora-secondary); }
+.gymora-stat-icon.expense { background: var(--gymora-primary-dim); color: var(--gymora-primary); }
+.gymora-stat-icon.members { background: var(--gymora-primary-dim); color: var(--gymora-primary); }
+.gymora-stat-icon.joined  { background: var(--gymora-secondary-dim); color: var(--gymora-secondary); }
+
+/* ── Badges ── */
+.gymora-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.gymora-badge.success { background: var(--gymora-secondary-dim); color: var(--gymora-secondary); }
+.gymora-badge.danger  { background: var(--gymora-primary-dim); color: var(--gymora-primary); }
+.gymora-badge.muted   { background: rgba(154,154,154,0.15); color: var(--gymora-muted); }
+
+/* ── Tables ── */
+.gymora-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gymora-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gymora-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gymora-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.gymora-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--gymora-text);
+  border-bottom: 1px solid var(--gymora-input-bg);
+}
+
+.gymora-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+/* ── Forms ── */
+.gymora-form-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gymora-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.gymora-input,
+.form-control,
+.form-select {
+  background: var(--gymora-input-bg) !important;
+  border: 1px solid var(--gymora-border) !important;
+  border-radius: 8px !important;
+  color: var(--gymora-text) !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.gymora-input:focus,
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gymora-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--gymora-primary-dim) !important;
+  background: var(--gymora-input-bg) !important;
+}
+
+.gymora-input::placeholder,
+.form-control::placeholder { color: var(--gymora-muted); }
+
+.form-select option { background: var(--gymora-surface); color: var(--gymora-text); }
+
+/* ── Buttons ── */
+.gymora-btn-primary {
+  background: var(--gymora-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.gymora-btn-primary:hover { background: #c8533a; color: #fff; }
+
+.gymora-btn-ghost {
+  background: transparent;
+  color: var(--gymora-muted);
+  border: 1px solid var(--gymora-border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.gymora-btn-ghost:hover { color: var(--gymora-text); border-color: var(--gymora-muted); }
+
+.gymora-btn-danger {
+  background: var(--gymora-primary-dim);
+  color: var(--gymora-primary);
+  border: 1px solid rgba(225,99,73,0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Alerts ── */
+.alert-success {
+  background: rgba(183,240,114,0.1) !important;
+  border: 1px solid rgba(183,240,114,0.3) !important;
+  color: var(--gymora-secondary) !important;
+  border-radius: 8px;
+}
+
+.alert-danger {
+  background: rgba(225,99,73,0.1) !important;
+  border: 1px solid rgba(225,99,73,0.3) !important;
+  color: var(--gymora-primary) !important;
+  border-radius: 8px;
+}
+
+/* ── Bootstrap overrides for dark theme ── */
+.text-white { color: var(--gymora-text) !important; }
+.text-muted { color: var(--gymora-muted) !important; }
+.fw-semibold { font-weight: 600; }
+.card { background: var(--gymora-surface); border: 1px solid var(--gymora-border); color: var(--gymora-text); }
+.table { color: var(--gymora-text); --bs-table-bg: transparent; --bs-table-border-color: var(--gymora-border); }
+.table td, .table th { color: var(--gymora-text); border-color: var(--gymora-border); }
+.modal-content { background: var(--gymora-surface); border: 1px solid var(--gymora-border); color: var(--gymora-text); }
+.dropdown-menu { background: var(--gymora-surface); border: 1px solid var(--gymora-border); }
+.dropdown-item { color: var(--gymora-text); }
+.dropdown-item:hover { background: var(--gymora-surface-2); color: var(--gymora-text); }
+.form-check-input { background-color: var(--gymora-input-bg); border-color: var(--gymora-border); }
+.form-check-label { color: var(--gymora-muted); }
+.input-group-text { background: var(--gymora-surface-2); border: 1px solid var(--gymora-border); color: var(--gymora-muted); }
+
+/* ── Theme Toggle Button ── */
+.gymora-theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--gymora-border);
+  background: transparent;
+  color: var(--gymora-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.gymora-theme-toggle:hover {
+  color: var(--gymora-text);
+  border-color: var(--gymora-muted);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ── Mobile Nav ── */
+.gymora-mobile-nav {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1C1C1E;
+  border: 1px solid var(--gymora-border);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  gap: 4px;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.gymora-mobile-nav.expanded { width: 288px; height: 60px; }
+.gymora-mobile-nav.compact  { width: 180px; height: 48px; }
+
+.gymora-nav-mobile-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  padding: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.gymora-nav-mobile-item i    { font-size: 18px; color: var(--gymora-muted); }
+.gymora-nav-mobile-item span { font-size: 9px; color: var(--gymora-muted); font-weight: 500; }
+.gymora-nav-mobile-item.active i    { color: var(--gymora-primary); }
+.gymora-nav-mobile-item.active span { color: var(--gymora-primary); }
+
+.gymora-mobile-bubble {
+  position: absolute;
+  top: -22px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #1C1C1E;
+  border: 1px solid var(--gymora-border);
+  box-shadow: 0 0 0 3px var(--gymora-primary-dim), 0 4px 20px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+}
+
+.gymora-mobile-bubble i    { font-size: 18px; color: var(--gymora-primary); }
+.gymora-mobile-bubble span { font-size: 9px; color: var(--gymora-primary); font-weight: 700; }
+
+/* ── Sidebar overlay (mobile) ── */
+.gymora-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+}
+
+.gymora-sidebar-overlay.show { display: block; }
+
+/* ── Footer ── */
+footer {
+  margin-top: auto;
+  border-top: 1px solid var(--gymora-border);
+  padding: 16px 24px;
+  color: var(--gymora-muted);
+  font-size: 12px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .gymora-sidebar {
+    transform: translateX(-240px);
+    z-index: 101;
+  }
+
+  .gymora-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .gymora-main {
+    margin-left: 0;
+  }
+
+  .gymora-content {
+    padding: 16px;
+    padding-bottom: 90px;
+  }
+}
+
+@media (min-width: 992px) {
+  .gymora-mobile-nav { display: none !important; }
+}
+
+/* ============================================================
+   LIGHT THEME
+   Activated by data-theme="light" on <html>
+   ============================================================ */
+
+[data-theme="light"] {
+  --gymora-bg: #F5F5F0;
+  --gymora-surface: #FFFFFF;
+  --gymora-surface-2: #F0EFE9;
+  --gymora-border: #E2E2DC;
+  --gymora-primary: #E16349;
+  --gymora-primary-dim: rgba(225,99,73,0.12);
+  --gymora-secondary: #5A9E1A;
+  --gymora-secondary-dim: rgba(90,158,26,0.12);
+  --gymora-text: #1A1A1A;
+  --gymora-muted: #6B6B6B;
+  --gymora-danger: #CC3333;
+  --gymora-input-bg: #F8F8F5;
+}
+
+[data-theme="light"] body { background: #F5F5F0; color: #1A1A1A; }
+[data-theme="light"] .gymora-sidebar { background: #FFFFFF; border-right: 1px solid #E2E2DC; }
+[data-theme="light"] .gymora-logo { border-bottom: 1px solid #E2E2DC; color: #1A1A1A; }
+[data-theme="light"] .gymora-logo span { color: #E16349; }
+[data-theme="light"] .gymora-nav-link { color: #6B6B6B; }
+[data-theme="light"] .gymora-nav-link:hover { color: #1A1A1A; background: rgba(0,0,0,0.04); }
+[data-theme="light"] .gymora-nav-link.active { color: #1A1A1A; background: rgba(225,99,73,0.1); border-left: 3px solid #E16349; }
+[data-theme="light"] .gymora-topbar { background: #FFFFFF; border-bottom: 1px solid #E2E2DC; }
+[data-theme="light"] .gymora-topbar-title { color: #1A1A1A; }
+[data-theme="light"] .gymora-topbar-right span { color: #6B6B6B !important; }
+[data-theme="light"] .gymora-main { background: #F5F5F0; }
+[data-theme="light"] .gymora-content { background: #F5F5F0; }
+[data-theme="light"] .gymora-card { background: #FFFFFF; border: 1px solid #E2E2DC; }
+[data-theme="light"] .gymora-card-title { color: #1A1A1A; }
+[data-theme="light"] .gymora-stat-val { color: #1A1A1A; }
+[data-theme="light"] .gymora-stat-label { color: #6B6B6B; }
+[data-theme="light"] .gymora-table th { color: #6B6B6B; border-bottom: 1px solid #E2E2DC; }
+[data-theme="light"] .gymora-table td { color: #1A1A1A; border-bottom: 1px solid #F0EFE9; }
+[data-theme="light"] .gymora-table tr:hover td { background: rgba(0,0,0,0.02); }
+[data-theme="light"] .gymora-input,
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select { background: #F8F8F5 !important; border: 1px solid #E2E2DC !important; color: #1A1A1A !important; }
+[data-theme="light"] .gymora-input:focus,
+[data-theme="light"] .form-control:focus,
+[data-theme="light"] .form-select:focus { border-color: #E16349 !important; box-shadow: 0 0 0 3px rgba(225,99,73,0.12) !important; background: #FFFFFF !important; }
+[data-theme="light"] .gymora-btn-ghost { color: #6B6B6B; border: 1px solid #E2E2DC; background: transparent; }
+[data-theme="light"] .gymora-btn-ghost:hover { color: #1A1A1A; border-color: #ABABAB; background: rgba(0,0,0,0.03); }
+[data-theme="light"] .gymora-badge.success { background: rgba(90,158,26,0.12); color: #3D7A0A; }
+[data-theme="light"] .gymora-badge.danger { background: rgba(204,51,51,0.1); color: #CC3333; }
+[data-theme="light"] .gymora-badge.muted { background: rgba(107,107,107,0.1); color: #6B6B6B; }
+[data-theme="light"] .alert-success { background: rgba(90,158,26,0.1) !important; border: 1px solid rgba(90,158,26,0.25) !important; color: #3D7A0A !important; }
+[data-theme="light"] .alert-danger { background: rgba(204,51,51,0.1) !important; border: 1px solid rgba(204,51,51,0.25) !important; color: #CC3333 !important; }
+[data-theme="light"] .card { background: #FFFFFF; border: 1px solid #E2E2DC; color: #1A1A1A; }
+[data-theme="light"] .table { color: #1A1A1A; --bs-table-bg: transparent; --bs-table-border-color: #E2E2DC; }
+[data-theme="light"] .table td, [data-theme="light"] .table th { border-color: #E2E2DC; color: #1A1A1A; }
+[data-theme="light"] .text-muted { color: #6B6B6B !important; }
+[data-theme="light"] .text-white { color: #1A1A1A !important; }
+[data-theme="light"] .gymora-mobile-nav { background: #FFFFFF; border: 1px solid #E2E2DC; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+[data-theme="light"] .gymora-mobile-bubble { background: #FFFFFF; border: 1px solid #E2E2DC; }
+[data-theme="light"] .gymora-theme-toggle { border: 1px solid #E2E2DC; color: #6B6B6B; }
+[data-theme="light"] .gymora-theme-toggle:hover { color: #1A1A1A; border-color: #ABABAB; background: rgba(0,0,0,0.04); }
+[data-theme="light"] .input-group-text { background: #F0EFE9; border: 1px solid #E2E2DC; color: #6B6B6B; }
+[data-theme="light"] footer { background: #FFFFFF !important; border-top: 1px solid #E2E2DC; color: #6B6B6B; }

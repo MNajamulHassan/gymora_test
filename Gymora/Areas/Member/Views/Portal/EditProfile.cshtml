@@ -1,0 +1,84 @@
+@model MemberEditViewModel
+@{
+    ViewData["Title"] = "Edit My Profile";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold mb-0"><i class="bi bi-pencil-square"></i> Edit My Profile</h3>
+    <a asp-area="Member" asp-controller="Portal" asp-action="Dashboard"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form asp-area="Member" asp-controller="Portal" asp-action="EditProfile" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Email read-only -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="text" value="@Model.Email" class="form-control" disabled />
+                <div class="form-text text-muted">Email cannot be changed here.</div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label fw-semibold"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label fw-semibold"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EmergencyContact" class="form-label fw-semibold"></label>
+                    <input asp-for="EmergencyContact" class="form-control" />
+                    <span asp-validation-for="EmergencyContact" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="FitnessGoals" class="form-label fw-semibold"></label>
+                    <textarea asp-for="FitnessGoals" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="FitnessGoals" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="HealthConditions" class="form-label fw-semibold"></label>
+                    <textarea asp-for="HealthConditions" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="HealthConditions" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-circle"></i> Save Changes
+                </button>
+                <a asp-area="Member" asp-controller="Portal" asp-action="Dashboard"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

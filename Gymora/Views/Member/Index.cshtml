@@ -1,0 +1,178 @@
+@model MemberListViewModel
+@{
+    ViewData["Title"] = "Members";
+}
+
+<style>
+    .member-row {
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
+    .member-row:hover td {
+        background: rgba(225,99,73,0.07) !important;
+    }
+</style>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <div class="gymora-card-title mb-0">
+            Members <span style="color:#9A9A9A;font-weight:500;">(@Model.TotalCount)</span>
+        </div>
+    </div>
+    <a asp-controller="Member" asp-action="Create" class="gymora-btn-primary text-decoration-none d-inline-flex align-items-center gap-2 flex-shrink-0">
+        <i class="bi bi-person-plus"></i> Add Member
+    </a>
+</div>
+
+<form asp-controller="Member" asp-action="Index" method="get" class="d-flex flex-wrap align-items-stretch gap-2 mb-4">
+    <div class="flex-grow-1" style="min-width:200px;">
+        <input asp-for="SearchQuery" name="search" class="gymora-input" placeholder="Search by name, email or phone..." />
+    </div>
+    <button type="submit" class="gymora-btn-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="padding:10px 16px;" aria-label="Search">
+        <i class="bi bi-search"></i>
+    </button>
+    @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+    {
+        <a asp-controller="Member" asp-action="Index" class="gymora-btn-ghost d-inline-flex align-items-center justify-content-center flex-shrink-0 text-decoration-none">
+            Clear
+        </a>
+    }
+</form>
+
+@if (Model.Members.Count == 0)
+{
+    <div class="gymora-card">
+        <div class="text-center py-5 px-3">
+            <i class="bi bi-people d-block mb-3" style="font-size:3rem;color:#9A9A9A;"></i>
+            <div class="gymora-card-title mb-2">No members found</div>
+            @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+            {
+                <div style="color:#9A9A9A; font-size:14px;">Try a different search term</div>
+            }
+            else
+            {
+                <a asp-controller="Member" asp-action="Create" class="gymora-btn-primary mt-2 text-decoration-none d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus"></i> Add your first member
+                </a>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="gymora-card p-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="gymora-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member</th>
+                        <th>Phone</th>
+                        <th>Gender</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var rowNum = (Model.PageNumber - 1) * Model.PageSize + 1;
+                    }
+                    @foreach (var member in Model.Members)
+                    {
+                        var fn = member.FullName?.Trim() ?? "";
+                        var avatarLetter = string.IsNullOrEmpty(fn) ? "?" : char.ToUpperInvariant(fn[0]).ToString();
+                        var displayRow = rowNum;
+                        var detailUrl = Url.Action("Detail", "Member", new { id = member.Id });
+                        rowNum++;
+                        <tr class="member-row" onclick="window.location='@detailUrl'" title="View @member.FullName">
+                            <td>@displayRow</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                         style="width:32px;height:32px;background:#E16349;color:#FFFFFF;font-weight:700;font-size:12px;">
+                                        @avatarLetter
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-semibold" style="color:var(--gymora-text);">@member.FullName</div>
+                                        <div style="font-size:11px;color:#9A9A9A;">@member.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@(member.PhoneNumber ?? "—")</td>
+                            <td>@(member.Gender ?? "—")</td>
+                            <td>@(member.JoinDate?.ToString("MMM dd, yyyy") ?? "—")</td>
+                            <td>
+                                <span class="gymora-badge @(member.IsActive ? "success" : "danger")">@member.StatusBadge</span>
+                            </td>
+                            <td onclick="event.stopPropagation()">
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <a asp-controller="Member" asp-action="Edit" asp-route-id="@member.Id"
+                                       class="gymora-btn-ghost d-inline-flex align-items-center justify-content-center text-decoration-none"
+                                       style="padding:8px 10px;min-width:38px;" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @if (User.IsInRole("GymOwner") && member.IsActive)
+                                    {
+                                        <form asp-controller="Member" asp-action="Deactivate" asp-route-id="@member.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="gymora-btn-danger d-inline-flex align-items-center justify-content-center"
+                                                    style="padding:8px 10px;min-width:38px;"
+                                                    title="Deactivate"
+                                                    onclick="return confirm('Deactivate @Html.Raw(member.FullName.Replace("'", "\\'"))?');">
+                                                <i class="bi bi-person-x-fill"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-4" aria-label="Pagination">
+            @if (Model.PageNumber > 1)
+            {
+                <a asp-controller="Member" asp-action="Index"
+                   asp-route-search="@Model.SearchQuery"
+                   asp-route-page="@(Model.PageNumber - 1)"
+                   class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-chevron-left"></i> Prev
+                </a>
+            }
+            @for (var p = 1; p <= Model.TotalPages; p++)
+            {
+                if (p == Model.PageNumber)
+                {
+                    <span class="d-inline-flex align-items-center justify-content-center rounded fw-semibold"
+                          style="background:#E16349;color:#fff;min-width:40px;padding:8px 12px;font-size:14px;border-radius:8px;">@p</span>
+                }
+                else
+                {
+                    <a asp-controller="Member" asp-action="Index"
+                       asp-route-search="@Model.SearchQuery"
+                       asp-route-page="@p"
+                       class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center justify-content-center"
+                       style="min-width:40px;padding:8px 12px;">
+                        @p
+                    </a>
+                }
+            }
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <a asp-controller="Member" asp-action="Index"
+                   asp-route-search="@Model.SearchQuery"
+                   asp-route-page="@(Model.PageNumber + 1)"
+                   class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            }
+        </nav>
+    }
+}
