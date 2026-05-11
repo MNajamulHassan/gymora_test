@@ -26,7 +26,6 @@ namespace Gymora.Services
 
         public async Task<MemberListViewModel> GetMemberListAsync(Guid tenantId, string? search, int page, int pageSize)
         {
-            // Get all users in "Member" role for this tenant
             var membersInRole = await _userManager.GetUsersInRoleAsync("Member");
 
             var query = membersInRole
@@ -76,7 +75,6 @@ namespace Gymora.Services
             if (user == null) return null;
 
             var roles = await _userManager.GetRolesAsync(user);
-
             return MapToDetail(user, roles.FirstOrDefault());
         }
 
@@ -191,7 +189,50 @@ namespace Gymora.Services
             return (true, string.Empty);
         }
 
+        // ── Deactivate: sets IsActive = false ONLY. Never touches IsDeleted. ──
         public async Task<(bool Success, string Error)> DeactivateMemberAsync(string userId, Guid tenantId)
+        {
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u => u.Id == userId && u.TenantId == tenantId && !u.IsDeleted);
+
+            if (user == null)
+                return (false, "Member not found.");
+
+            user.IsActive = false;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                return (false, errors);
+            }
+
+            return (true, string.Empty);
+        }
+
+        // ── Reactivate: sets IsActive = true ──
+        public async Task<(bool Success, string Error)> ReactivateMemberAsync(string userId, Guid tenantId)
+        {
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u => u.Id == userId && u.TenantId == tenantId && !u.IsDeleted);
+
+            if (user == null)
+                return (false, "Member not found.");
+
+            user.IsActive = true;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                return (false, errors);
+            }
+
+            return (true, string.Empty);
+        }
+
+        // ── Hard delete (soft-delete flag) ──
+        public async Task<(bool Success, string Error)> DeleteMemberAsync(string userId, Guid tenantId)
         {
             var user = await _db.Users
                 .FirstOrDefaultAsync(u => u.Id == userId && u.TenantId == tenantId);
@@ -206,30 +247,6 @@ namespace Gymora.Services
             if (!result.Succeeded)
             {
                 var errors = string.Join("; ", result.Errors.Select(e => e.Description));
-                return (false, errors);
-            }
-
-            return (true, string.Empty);
-        }
-
-        public async Task<(bool Success, string Error)> DeleteMemberAsync(string userId, Guid tenantId)
-        {
-            var user = await _db.Users
-                .FirstOrDefaultAsync(u =>
-                    u.Id == userId &&
-                    u.TenantId == tenantId);
-
-            if (user == null)
-                return (false, "Member not found.");
-
-            user.IsActive = false;
-            user.IsDeleted = true;
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                var errors = string.Join("; ",
-                    result.Errors.Select(e => e.Description));
                 return (false, errors);
             }
 
@@ -253,7 +270,6 @@ namespace Gymora.Services
             if (user == null)
                 return (false, "User not found.");
 
-            // Only allow safe fields — no email, TenantId, IsActive, roles, or IsDeleted changes
             user.FullName = model.FullName;
             user.PhoneNumber = model.PhoneNumber;
             user.Address = model.Address;

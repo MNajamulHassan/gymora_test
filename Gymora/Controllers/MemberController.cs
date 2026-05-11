@@ -100,7 +100,39 @@ namespace Gymora.Controllers
             else
                 TempData["Error"] = error;
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Detail), new { id });
+        }
+
+        // POST /Member/Reactivate/{id}
+        [HttpPost]
+        [Authorize(Roles = "GymOwner")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reactivate(string id)
+        {
+            var (success, error) = await _memberService.ReactivateMemberAsync(id, DemoTenantId);
+            if (success)
+                TempData["Success"] = "Member has been reactivated.";
+            else
+                TempData["Error"] = error;
+
+            return RedirectToAction(nameof(Detail), new { id });
+        }
+
+        // POST /Member/Delete/{id}
+        [HttpPost]
+        [Authorize(Roles = "GymOwner")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var (success, error) = await _memberService.DeleteMemberAsync(id, DemoTenantId);
+            if (success)
+            {
+                TempData["Success"] = "Member has been permanently deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Error"] = error;
+            return RedirectToAction(nameof(Detail), new { id });
         }
     }
 }

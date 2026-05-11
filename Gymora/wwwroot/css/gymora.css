@@ -21,9 +21,7 @@
 }
 
 /* ── Base ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body {
   margin: 0;
@@ -32,6 +30,7 @@ html, body {
   font-size: 14px;
   background: var(--gymora-bg);
   color: var(--gymora-text);
+  overflow-x: hidden;
 }
 
 a { text-decoration: none; }
@@ -40,6 +39,8 @@ a { text-decoration: none; }
 .gymora-wrapper {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* ── Sidebar ── */
@@ -54,7 +55,7 @@ a { text-decoration: none; }
   display: flex;
   flex-direction: column;
   z-index: 100;
-  transition: transform 0.3s ease, background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s ease, width 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
 .gymora-logo {
@@ -90,44 +91,74 @@ a { text-decoration: none; }
   transition: all 0.2s ease;
 }
 
-.gymora-nav-link:hover {
-  color: var(--gymora-text);
-  background: rgba(255,255,255,0.05);
-}
-
-.gymora-nav-link.active {
-  color: var(--gymora-text);
-  background: rgba(225,99,73,0.12);
-  border-left: 3px solid var(--gymora-primary);
-}
-
+.gymora-nav-link:hover { color: var(--gymora-text); background: rgba(255,255,255,0.05); }
+.gymora-nav-link.active { color: var(--gymora-text); background: rgba(225,99,73,0.12); border-left: 3px solid var(--gymora-primary); }
 .gymora-nav-link i { font-size: 18px; }
 
-.gymora-nav-cta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 8px 16px;
-  padding: 10px 16px;
-  background: var(--gymora-primary);
-  color: #FFFFFF;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
+/* ── Sidebar collapse (desktop only) ── */
+.gymora-sidebar.collapsed { width: 64px !important; overflow: hidden; white-space: nowrap; }
+.gymora-logo-text { transition: opacity 0.2s ease; white-space: nowrap; }
+.gymora-sidebar.collapsed .gymora-logo-text { opacity: 0; width: 0; overflow: hidden; }
+.gymora-sidebar.collapsed .gymora-logo { justify-content: center; padding-left: 0; padding-right: 0; }
+.gymora-nav-link-text { transition: opacity 0.15s ease; white-space: nowrap; overflow: hidden; }
+.gymora-sidebar.collapsed .gymora-nav-link-text { opacity: 0; width: 0; }
+.gymora-sidebar.collapsed .gymora-nav-link { justify-content: center; padding-left: 0; padding-right: 0; }
+.gymora-sidebar.collapsed .gymora-nav-link i { font-size: 20px; margin: 0; }
+.gymora-sidebar.collapsed .gymora-nav-section-label { opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden; }
 
-.gymora-nav-cta:hover { background: #c8533a; color: #fff; }
+/* Tooltip on collapsed hover */
+.gymora-sidebar.collapsed .gymora-nav-link::before {
+  content: attr(data-label);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--gymora-surface-2);
+  color: var(--gymora-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  border: 1px solid var(--gymora-border);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.gymora-sidebar.collapsed .gymora-nav-link:hover::before { opacity: 1; }
+
+/* Coming soon */
+.gymora-nav-link.coming-soon { opacity: 0.45; cursor: not-allowed; }
+.gymora-nav-link.coming-soon:hover { background: transparent !important; color: var(--gymora-muted) !important; }
+.gymora-sidebar:not(.collapsed) .gymora-nav-link.coming-soon { position: relative; }
+.gymora-sidebar:not(.collapsed) .gymora-nav-link.coming-soon::after {
+  content: 'Coming Soon';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--gymora-surface-2);
+  color: var(--gymora-muted);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--gymora-border);
+  white-space: nowrap;
+}
 
 /* ── Main Area ── */
 .gymora-main {
   margin-left: 240px;
   flex: 1;
   min-height: 100vh;
+  min-width: 0;
   background: var(--gymora-bg);
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
 /* ── Topbar ── */
@@ -149,12 +180,17 @@ a { text-decoration: none; }
   font-weight: 600;
   color: var(--gymora-text);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .gymora-topbar-right {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .gymora-avatar {
@@ -175,6 +211,8 @@ a { text-decoration: none; }
 .gymora-content {
   padding: 24px;
   flex: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 /* ── Cards ── */
@@ -199,17 +237,8 @@ a { text-decoration: none; }
 }
 
 /* ── Stat Cards ── */
-.gymora-stat-val {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--gymora-text);
-  margin: 8px 0 4px;
-}
-
-.gymora-stat-label {
-  font-size: 12px;
-  color: var(--gymora-muted);
-}
+.gymora-stat-val { font-size: 28px; font-weight: 700; color: var(--gymora-text); margin: 8px 0 4px; }
+.gymora-stat-label { font-size: 12px; color: var(--gymora-muted); }
 
 .gymora-stat-icon {
   width: 40px;
@@ -242,10 +271,7 @@ a { text-decoration: none; }
 .gymora-badge.muted   { background: rgba(154,154,154,0.15); color: var(--gymora-muted); }
 
 /* ── Tables ── */
-.gymora-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+.gymora-table { width: 100%; border-collapse: collapse; }
 
 .gymora-table th {
   font-size: 11px;
@@ -264,6 +290,7 @@ a { text-decoration: none; }
   font-size: 13px;
   color: var(--gymora-text);
   border-bottom: 1px solid var(--gymora-input-bg);
+  white-space: nowrap;
 }
 
 .gymora-table tr:hover td { background: rgba(255,255,255,0.03); }
@@ -282,7 +309,7 @@ a { text-decoration: none; }
 .form-select {
   background: var(--gymora-input-bg) !important;
   border: 1px solid var(--gymora-border) !important;
-  border-radius: 8px !important;
+  border-radius: 8px;
   color: var(--gymora-text) !important;
   padding: 10px 14px !important;
   font-size: 14px !important;
@@ -303,6 +330,20 @@ a { text-decoration: none; }
 .form-control::placeholder { color: var(--gymora-muted); }
 
 .form-select option { background: var(--gymora-surface); color: var(--gymora-text); }
+
+/* ── Input group — join icon + input cleanly ── */
+.input-group .input-group-text {
+  border-radius: 8px 0 0 8px !important;
+  border-right: none !important;
+  background: var(--gymora-input-bg) !important;
+  border-color: var(--gymora-border) !important;
+  color: var(--gymora-muted);
+}
+
+.input-group .form-control {
+  border-radius: 0 8px 8px 0 !important;
+  border-left: none !important;
+}
 
 /* ── Buttons ── */
 .gymora-btn-primary {
@@ -363,7 +404,7 @@ a { text-decoration: none; }
   border-radius: 8px;
 }
 
-/* ── Bootstrap overrides for dark theme ── */
+/* ── Bootstrap overrides ── */
 .text-white { color: var(--gymora-text) !important; }
 .text-muted { color: var(--gymora-muted) !important; }
 .fw-semibold { font-weight: 600; }
@@ -378,7 +419,7 @@ a { text-decoration: none; }
 .form-check-label { color: var(--gymora-muted); }
 .input-group-text { background: var(--gymora-surface-2); border: 1px solid var(--gymora-border); color: var(--gymora-muted); }
 
-/* ── Theme Toggle Button ── */
+/* ── Theme Toggle ── */
 .gymora-theme-toggle {
   width: 36px;
   height: 36px;
@@ -395,16 +436,61 @@ a { text-decoration: none; }
   padding: 0;
 }
 
-.gymora-theme-toggle:hover {
-  color: var(--gymora-text);
-  border-color: var(--gymora-muted);
-  background: rgba(255,255,255,0.05);
+.gymora-theme-toggle:hover { color: var(--gymora-text); border-color: var(--gymora-muted); background: rgba(255,255,255,0.05); }
+
+/* ── Avatar dropdown ── */
+.gymora-user-dropdown { position: relative; }
+.gymora-user-trigger {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 4px 8px; border-radius: 8px; border: 1px solid transparent;
+  background: transparent; transition: all 0.2s ease;
+}
+.gymora-user-trigger:hover { background: rgba(255,255,255,0.06); border-color: var(--gymora-border); }
+.gymora-user-trigger .username { font-size: 12px; color: var(--gymora-muted); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gymora-user-trigger .chevron { font-size: 10px; color: var(--gymora-muted); transition: transform 0.2s ease; }
+.gymora-user-trigger.open .chevron { transform: rotate(180deg); }
+
+.gymora-dropdown-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px;
+  background: var(--gymora-surface); border: 1px solid var(--gymora-border);
+  border-radius: 12px; padding: 8px; z-index: 300;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  opacity: 0; transform: translateY(-8px); pointer-events: none; transition: all 0.2s ease;
+}
+.gymora-dropdown-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.gymora-dropdown-header { padding: 8px 12px 12px; border-bottom: 1px solid var(--gymora-border); margin-bottom: 8px; }
+.gymora-dropdown-header .name { font-size: 13px; font-weight: 600; color: var(--gymora-text); }
+.gymora-dropdown-header .email { font-size: 11px; color: var(--gymora-muted); margin-top: 2px; }
+.gymora-dropdown-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  border-radius: 8px; font-size: 13px; color: var(--gymora-muted);
+  text-decoration: none; cursor: pointer; transition: all 0.15s ease;
+  border: none; background: transparent; width: 100%; text-align: left;
+  font-family: 'Inter', sans-serif;
+}
+.gymora-dropdown-item:hover { background: rgba(255,255,255,0.06); color: var(--gymora-text); }
+.gymora-dropdown-item.danger { color: var(--gymora-primary); }
+.gymora-dropdown-item.danger:hover { background: var(--gymora-primary-dim); color: var(--gymora-primary); }
+.gymora-dropdown-divider { height: 1px; background: var(--gymora-border); margin: 8px 0; }
+
+/* ── Autofill override ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--gymora-input-bg) inset !important;
+  -webkit-text-fill-color: var(--gymora-text) !important;
+  caret-color: var(--gymora-text) !important;
+  transition: background-color 99999s ease-in-out 0s;
 }
 
-/* ── Mobile Nav ── */
+/* ============================================================
+   MOBILE NAV — Pill bar, center bubble = Home
+   ============================================================ */
+
 .gymora-mobile-nav {
   position: fixed;
-  bottom: 14px;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
   background: #1C1C1E;
@@ -412,15 +498,14 @@ a { text-decoration: none; }
   border-radius: 999px;
   display: flex;
   align-items: center;
-  padding: 6px 10px;
-  gap: 4px;
+  justify-content: space-around;
+  padding: 0 8px;
   z-index: 200;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  height: 64px;
+  width: 340px;
+  max-width: calc(100vw - 32px);
 }
-
-.gymora-mobile-nav.expanded { width: 288px; height: 60px; }
-.gymora-mobile-nav.compact  { width: 180px; height: 48px; }
 
 .gymora-nav-mobile-item {
   display: flex;
@@ -429,38 +514,81 @@ a { text-decoration: none; }
   justify-content: center;
   gap: 3px;
   flex: 1;
-  padding: 4px;
-  border-radius: 999px;
+  height: 100%;
+  padding: 4px 2px;
   cursor: pointer;
-  transition: all 0.3s ease;
   text-decoration: none;
+  position: relative;
+  border-radius: 999px;
+  transition: all 0.2s ease;
 }
 
-.gymora-nav-mobile-item i    { font-size: 18px; color: var(--gymora-muted); }
-.gymora-nav-mobile-item span { font-size: 9px; color: var(--gymora-muted); font-weight: 500; }
+.gymora-nav-mobile-item i    { font-size: 19px; color: var(--gymora-muted); transition: color 0.2s ease; }
+.gymora-nav-mobile-item span { font-size: 9px; color: var(--gymora-muted); font-weight: 500; transition: color 0.2s ease; }
+
 .gymora-nav-mobile-item.active i    { color: var(--gymora-primary); }
 .gymora-nav-mobile-item.active span { color: var(--gymora-primary); }
 
-.gymora-mobile-bubble {
+.gymora-nav-mobile-item.active::after {
+  content: '';
   position: absolute;
-  top: -22px;
-  width: 52px;
-  height: 52px;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: #1C1C1E;
-  border: 1px solid var(--gymora-border);
-  box-shadow: 0 0 0 3px var(--gymora-primary-dim), 0 4px 20px rgba(0,0,0,0.8);
+  background: var(--gymora-primary);
+}
+
+.gymora-nav-mobile-item.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Center Home Bubble */
+.gymora-mobile-home {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: none;
+  flex-shrink: 0;
+  width: 64px;
+  text-decoration: none;
+  position: relative;
+  cursor: pointer;
 }
 
-.gymora-mobile-bubble i    { font-size: 18px; color: var(--gymora-primary); }
-.gymora-mobile-bubble span { font-size: 9px; color: var(--gymora-primary); font-weight: 700; }
+.gymora-mobile-home-bubble {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gymora-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px rgba(225,99,73,0.2), 0 4px 20px rgba(225,99,73,0.4);
+  position: relative;
+  top: -8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gymora-mobile-home-bubble:active { transform: scale(0.93); }
+
+.gymora-mobile-home-bubble i { font-size: 20px; color: #FFFFFF; }
+
+.gymora-mobile-home span {
+  font-size: 9px;
+  color: var(--gymora-primary);
+  font-weight: 700;
+  position: relative;
+  top: -4px;
+}
+
+.gymora-mobile-home.active .gymora-mobile-home-bubble {
+  box-shadow: 0 0 0 5px rgba(225,99,73,0.35), 0 6px 24px rgba(225,99,73,0.5);
+}
 
 /* ── Sidebar overlay (mobile) ── */
 .gymora-sidebar-overlay {
@@ -473,43 +601,63 @@ a { text-decoration: none; }
 
 .gymora-sidebar-overlay.show { display: block; }
 
-/* ── Footer ── */
-footer {
-  margin-top: auto;
-  border-top: 1px solid var(--gymora-border);
-  padding: 16px 24px;
-  color: var(--gymora-muted);
-  font-size: 12px;
-}
+/* ============================================================
+   RESPONSIVE — Mobile First
+   ============================================================ */
 
-/* ── Responsive ── */
 @media (max-width: 991px) {
+  /* Sidebar: hidden off-screen on mobile */
   .gymora-sidebar {
     transform: translateX(-240px);
     z-index: 101;
   }
-
   .gymora-sidebar.mobile-open {
     transform: translateX(0);
   }
 
+  /* CRITICAL: main area must have NO left margin on mobile */
   .gymora-main {
-    margin-left: 0;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 
   .gymora-content {
     padding: 16px;
-    padding-bottom: 90px;
+    /* Space for bottom nav pill */
+    padding-bottom: 100px;
+    width: 100%;
+    min-width: 0;
   }
+
+  .gymora-topbar {
+    padding: 0 16px;
+  }
+
+  .gymora-topbar-title {
+    font-size: 15px;
+  }
+
+  /* Table: hide low-priority columns */
+  .col-phone, .col-gender, .col-joined { display: none; }
+
+  .table-responsive {
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  /* Stack action buttons vertically on very small screens */
+  .gymora-table td { padding: 10px 12px; }
+  .gymora-table th { padding: 8px 12px; }
 }
 
 @media (min-width: 992px) {
   .gymora-mobile-nav { display: none !important; }
+  /* Column hiding classes don't apply on desktop */
+  .col-phone, .col-gender, .col-joined { display: table-cell; }
 }
 
 /* ============================================================
    LIGHT THEME
-   Activated by data-theme="light" on <html>
    ============================================================ */
 
 [data-theme="light"] {
@@ -530,13 +678,11 @@ footer {
 [data-theme="light"] body { background: #F5F5F0; color: #1A1A1A; }
 [data-theme="light"] .gymora-sidebar { background: #FFFFFF; border-right: 1px solid #E2E2DC; }
 [data-theme="light"] .gymora-logo { border-bottom: 1px solid #E2E2DC; color: #1A1A1A; }
-[data-theme="light"] .gymora-logo span { color: #E16349; }
 [data-theme="light"] .gymora-nav-link { color: #6B6B6B; }
 [data-theme="light"] .gymora-nav-link:hover { color: #1A1A1A; background: rgba(0,0,0,0.04); }
 [data-theme="light"] .gymora-nav-link.active { color: #1A1A1A; background: rgba(225,99,73,0.1); border-left: 3px solid #E16349; }
 [data-theme="light"] .gymora-topbar { background: #FFFFFF; border-bottom: 1px solid #E2E2DC; }
 [data-theme="light"] .gymora-topbar-title { color: #1A1A1A; }
-[data-theme="light"] .gymora-topbar-right span { color: #6B6B6B !important; }
 [data-theme="light"] .gymora-main { background: #F5F5F0; }
 [data-theme="light"] .gymora-content { background: #F5F5F0; }
 [data-theme="light"] .gymora-card { background: #FFFFFF; border: 1px solid #E2E2DC; }
@@ -548,10 +694,18 @@ footer {
 [data-theme="light"] .gymora-table tr:hover td { background: rgba(0,0,0,0.02); }
 [data-theme="light"] .gymora-input,
 [data-theme="light"] .form-control,
-[data-theme="light"] .form-select { background: #F8F8F5 !important; border: 1px solid #E2E2DC !important; color: #1A1A1A !important; }
+[data-theme="light"] .form-select {
+  background: #F8F8F5 !important;
+  border: 1px solid #E2E2DC !important;
+  color: #1A1A1A !important;
+}
 [data-theme="light"] .gymora-input:focus,
 [data-theme="light"] .form-control:focus,
-[data-theme="light"] .form-select:focus { border-color: #E16349 !important; box-shadow: 0 0 0 3px rgba(225,99,73,0.12) !important; background: #FFFFFF !important; }
+[data-theme="light"] .form-select:focus {
+  border-color: #E16349 !important;
+  box-shadow: 0 0 0 3px rgba(225,99,73,0.12) !important;
+  background: #FFFFFF !important;
+}
 [data-theme="light"] .gymora-btn-ghost { color: #6B6B6B; border: 1px solid #E2E2DC; background: transparent; }
 [data-theme="light"] .gymora-btn-ghost:hover { color: #1A1A1A; border-color: #ABABAB; background: rgba(0,0,0,0.03); }
 [data-theme="light"] .gymora-badge.success { background: rgba(90,158,26,0.12); color: #3D7A0A; }
@@ -559,14 +713,19 @@ footer {
 [data-theme="light"] .gymora-badge.muted { background: rgba(107,107,107,0.1); color: #6B6B6B; }
 [data-theme="light"] .alert-success { background: rgba(90,158,26,0.1) !important; border: 1px solid rgba(90,158,26,0.25) !important; color: #3D7A0A !important; }
 [data-theme="light"] .alert-danger { background: rgba(204,51,51,0.1) !important; border: 1px solid rgba(204,51,51,0.25) !important; color: #CC3333 !important; }
-[data-theme="light"] .card { background: #FFFFFF; border: 1px solid #E2E2DC; color: #1A1A1A; }
-[data-theme="light"] .table { color: #1A1A1A; --bs-table-bg: transparent; --bs-table-border-color: #E2E2DC; }
-[data-theme="light"] .table td, [data-theme="light"] .table th { border-color: #E2E2DC; color: #1A1A1A; }
-[data-theme="light"] .text-muted { color: #6B6B6B !important; }
-[data-theme="light"] .text-white { color: #1A1A1A !important; }
 [data-theme="light"] .gymora-mobile-nav { background: #FFFFFF; border: 1px solid #E2E2DC; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-[data-theme="light"] .gymora-mobile-bubble { background: #FFFFFF; border: 1px solid #E2E2DC; }
 [data-theme="light"] .gymora-theme-toggle { border: 1px solid #E2E2DC; color: #6B6B6B; }
 [data-theme="light"] .gymora-theme-toggle:hover { color: #1A1A1A; border-color: #ABABAB; background: rgba(0,0,0,0.04); }
 [data-theme="light"] .input-group-text { background: #F0EFE9; border: 1px solid #E2E2DC; color: #6B6B6B; }
-[data-theme="light"] footer { background: #FFFFFF !important; border-top: 1px solid #E2E2DC; color: #6B6B6B; }
+[data-theme="light"] .gymora-user-trigger:hover { background: rgba(0,0,0,0.04); }
+[data-theme="light"] .gymora-dropdown-menu { box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+[data-theme="light"] .gymora-dropdown-item:hover { background: rgba(0,0,0,0.04); }
+[data-theme="light"] .gymora-nav-mobile-item.active::after { background: #E16349; }
+[data-theme="light"] input:-webkit-autofill,
+[data-theme="light"] input:-webkit-autofill:hover,
+[data-theme="light"] input:-webkit-autofill:focus,
+[data-theme="light"] input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #F8F8F5 inset !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+  caret-color: #1A1A1A !important;
+}

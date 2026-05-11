@@ -6,10 +6,10 @@
 
 <div class="d-flex flex-column align-items-center justify-content-center py-5 px-3 mx-auto w-100" style="max-width:440px;">
     <div class="text-center mb-4">
-        <div class="mb-2" style="font-size:22px;font-weight:700;color:#FFFFFF;">
+        <div class="mb-2" style="font-size:22px;font-weight:700;color:var(--gymora-text);">
             ⚡ Gym<span style="color:#E16349;">ora</span>
         </div>
-        <div style="color:#9A9A9A;font-size:14px;">Sign in to continue</div>
+        <div style="color:var(--gymora-muted);font-size:14px;">Sign in to continue</div>
     </div>
 
     @if (TempData["Error"] != null)
@@ -20,33 +20,39 @@
     <div class="gymora-card w-100" style="max-width:400px;">
         <form asp-controller="Auth" asp-action="Login" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+            {
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+            }
 
             <div class="mb-3">
-                <label asp-for="Email" class="gymora-form-label"></label>
+                <label asp-for="Email" class="gymora-form-label">Email</label>
                 <div class="input-group">
-                    <span class="input-group-text border-end-0" style="background:#1E1E1E;border-color:#2E2E2E;color:#9A9A9A;border-radius:8px 0 0 8px;">
+                    <span class="input-group-text">
                         <i class="bi bi-envelope"></i>
                     </span>
-                    <input asp-for="Email" class="form-control border-start-0" style="border-radius:0 8px 8px 0;" placeholder="Enter your email" />
+                    <input asp-for="Email" class="form-control" placeholder="Enter your email" autocomplete="email" />
                 </div>
                 <span asp-validation-for="Email" class="text-danger small"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Password" class="gymora-form-label"></label>
+            <div class="mb-4">
+                <label asp-for="Password" class="gymora-form-label">Password</label>
                 <div class="input-group">
-                    <span class="input-group-text border-end-0" style="background:#1E1E1E;border-color:#2E2E2E;color:#9A9A9A;border-radius:8px 0 0 8px;">
+                    <span class="input-group-text">
                         <i class="bi bi-lock"></i>
                     </span>
-                    <input asp-for="Password" class="form-control border-start-0" style="border-radius:0 8px 8px 0;" placeholder="Enter your password" />
+                    <input asp-for="Password" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
                 </div>
                 <span asp-validation-for="Password" class="text-danger small"></span>
             </div>
 
             <div class="mb-4 d-flex align-items-center gap-2">
-                <input asp-for="RememberMe" class="form-check-input" style="background-color:#1E1E1E;border-color:#2E2E2E;" />
-                <label asp-for="RememberMe" class="form-check-label" style="color:#9A9A9A;font-size:14px;"></label>
+                <input asp-for="RememberMe" class="form-check-input m-0" style="width:18px;height:18px;flex-shrink:0;" />
+                <label asp-for="RememberMe" class="form-check-label" style="color:var(--gymora-muted);font-size:14px;cursor:pointer;">
+                    Remember me
+                </label>
             </div>
 
             <button type="submit" class="gymora-btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2">
@@ -55,7 +61,7 @@
         </form>
     </div>
 
-    <div class="text-center mt-4" style="color:#9A9A9A;font-size:14px;">
+    <div class="text-center mt-4" style="color:var(--gymora-muted);font-size:14px;">
         New member?
         <a asp-controller="Auth" asp-action="Register" class="text-decoration-none fw-semibold" style="color:#E16349;">Register</a>
     </div>

@@ -10,6 +10,7 @@ namespace Gymora.Services.Interfaces
         Task<MemberEditViewModel?> GetMemberForEditAsync(string userId, Guid tenantId);
         Task<(bool Success, string Error)> UpdateMemberAsync(MemberEditViewModel model, Guid tenantId);
         Task<(bool Success, string Error)> DeactivateMemberAsync(string userId, Guid tenantId);
+        Task<(bool Success, string Error)> ReactivateMemberAsync(string userId, Guid tenantId);
         Task<(bool Success, string Error)> DeleteMemberAsync(string userId, Guid tenantId);
         Task<MemberDetailViewModel?> GetOwnProfileAsync(string userId);
         Task<(bool Success, string Error)> UpdateOwnProfileAsync(MemberEditViewModel model, string userId);

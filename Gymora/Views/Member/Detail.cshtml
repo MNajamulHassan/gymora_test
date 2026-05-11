@@ -16,6 +16,21 @@
     }
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <i class="bi bi-exclamation-circle"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <div class="mb-3">
     <a asp-controller="Member" asp-action="Index" class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-2" style="padding:8px 14px;font-size:13px;">
         <i class="bi bi-arrow-left"></i> Back to Members
@@ -78,22 +93,57 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-column gap-2 mt-4">
-                <a asp-controller="Member" asp-action="Edit" asp-route-id="@Model.Id"
-                   class="gymora-btn-primary text-decoration-none d-inline-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-pencil"></i> Edit
-                </a>
-                @if (User.IsInRole("GymOwner") && Model.IsActive)
-                {
-                    <form asp-controller="Member" asp-action="Deactivate" asp-route-id="@Model.Id" method="post">
+            @if (User.IsInRole("GymOwner"))
+            {
+                <div class="d-flex flex-column gap-2 mt-4">
+                    <a asp-controller="Member" asp-action="Edit" asp-route-id="@Model.Id"
+                       class="gymora-btn-primary text-decoration-none d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+
+                    @if (Model.IsActive)
+                    {
+                        <form asp-controller="Member" asp-action="Deactivate" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="gymora-btn-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
+                                    onclick="return confirm('Deactivate this member? They will lose access but their data is kept.');">
+                                <i class="bi bi-person-dash-fill"></i> Deactivate Member
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Member" asp-action="Reactivate" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="w-100 d-inline-flex align-items-center justify-content-center gap-2"
+                                    style="background:rgba(183,240,114,0.15);color:#B7F072;border:1px solid rgba(183,240,114,0.3);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"
+                                    onclick="return confirm('Reactivate this member?');">
+                                <i class="bi bi-person-check-fill"></i> Reactivate Member
+                            </button>
+                        </form>
+                    }
+
+                    <hr style="border-color:#2E2E2E;margin:4px 0;opacity:1;" />
+
+                    <form asp-controller="Member" asp-action="Delete" asp-route-id="@Model.Id" method="post">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="gymora-btn-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
-                                onclick="return confirm('Are you sure you want to deactivate this member?');">
-                            <i class="bi bi-person-x-fill"></i> Deactivate
+                        <button type="submit" class="gymora-btn-ghost w-100 d-inline-flex align-items-center justify-content-center gap-2"
+                                style="color:#E05252;border-color:rgba(224,82,82,0.3);"
+                                onclick="return confirm('PERMANENTLY delete this member? This cannot be undone.');">
+                            <i class="bi bi-trash3"></i> Delete Permanently
                         </button>
                     </form>
-                }
-            </div>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-2 mt-4">
+                    <a asp-controller="Member" asp-action="Edit" asp-route-id="@Model.Id"
+                       class="gymora-btn-primary text-decoration-none d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                </div>
+            }
         </div>
     </div>
 
