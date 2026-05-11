@@ -18,9 +18,9 @@ namespace Gymora.Controllers
 
         // GET /Member/Index
         [HttpGet]
-        public async Task<IActionResult> Index(string? search, int page = 1)
+        public async Task<IActionResult> Index(string? search, int page = 1, string? sortBy = null, string? sortDir = null, string? statusFilter = null)
         {
-            var model = await _memberService.GetMemberListAsync(DemoTenantId, search, page, 20);
+            var model = await _memberService.GetMemberListAsync(DemoTenantId, search, page, 20, sortBy, sortDir, statusFilter);
             return View(model);
         }
 

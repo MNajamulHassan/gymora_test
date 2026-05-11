@@ -24,13 +24,19 @@ namespace Gymora.Services
             _roleManager = roleManager;
         }
 
-        public async Task<MemberListViewModel> GetMemberListAsync(Guid tenantId, string? search, int page, int pageSize)
+        public async Task<MemberListViewModel> GetMemberListAsync(
+            Guid tenantId,
+            string? search,
+            int page,
+            int pageSize,
+            string? sortBy = null,
+            string? sortDir = null,
+            string? statusFilter = null)
         {
             var membersInRole = await _userManager.GetUsersInRoleAsync("Member");
 
-            var query = membersInRole
-                .Where(u => u.TenantId == tenantId && !u.IsDeleted)
-                .AsQueryable();
+            IEnumerable<ApplicationUser> query = membersInRole
+                .Where(u => u.TenantId == tenantId && !u.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -41,9 +47,28 @@ namespace Gymora.Services
                     (u.PhoneNumber != null && u.PhoneNumber.Contains(lower)));
             }
 
-            var ordered = query.OrderBy(u => u.FullName).ToList();
-            var totalCount = ordered.Count;
-            var paged = ordered.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            if (statusFilter == "active")
+                query = query.Where(u => u.IsActive);
+            else if (statusFilter == "inactive")
+                query = query.Where(u => !u.IsActive);
+
+            var sortKey = sortBy?.ToLowerInvariant();
+            var dirKey = string.IsNullOrWhiteSpace(sortDir) ? "asc" : sortDir.ToLowerInvariant();
+
+            IEnumerable<ApplicationUser> ordered = (sortKey, dirKey) switch
+            {
+                ("name", "desc") => query.OrderByDescending(u => u.FullName),
+                ("name", _) => query.OrderBy(u => u.FullName),
+                ("joined", "desc") => query.OrderByDescending(u => u.JoinDate ?? DateTime.MinValue),
+                ("joined", _) => query.OrderBy(u => u.JoinDate ?? DateTime.MinValue),
+                ("status", "desc") => query.OrderByDescending(u => u.IsActive),
+                ("status", _) => query.OrderBy(u => u.IsActive),
+                _ => query.OrderByDescending(u => u.CreatedAt)
+            };
+
+            var orderedList = ordered.ToList();
+            var totalCount = orderedList.Count;
+            var paged = orderedList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var rows = paged.Select(u => new MemberRowViewModel
             {
@@ -62,7 +87,10 @@ namespace Gymora.Services
                 SearchQuery = search,
                 TotalCount = totalCount,
                 PageNumber = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                SortBy = sortKey,
+                SortDir = sortKey == null ? null : dirKey,
+                StatusFilter = statusFilter
             };
         }
 

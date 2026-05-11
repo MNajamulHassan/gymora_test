@@ -10,6 +10,46 @@
     var maxVal = Model.MonthlyJoins.Any() ? Model.MonthlyJoins.Max(m => m.Count) : 0;
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mb-0">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mb-0">@TempData["Error"]</div>
+}
+
+@if (Model.TotalMembers == 0)
+{
+    <div class="gymora-onboarding-banner gymora-card mb-4">
+        <div class="d-flex flex-column flex-md-row align-items-start gap-3">
+            <div class="flex-shrink-0">
+                <i class="bi bi-lightning-charge-fill" style="color: var(--gymora-primary); font-size: 2.5rem;"></i>
+            </div>
+            <div class="flex-grow-1">
+                <div style="color: var(--gymora-text); font-size: 16px; font-weight: 700;" class="mb-2">
+                    Welcome to Gymora! Here's how to get started
+                </div>
+                <ol class="mb-3 ps-3" style="color: var(--gymora-muted); font-size: 13px;">
+                    <li class="mb-1">
+                        <a asp-controller="Plan" asp-action="Create" class="text-decoration-none fw-semibold" style="color: var(--gymora-primary);">Create a Membership Plan</a>
+                    </li>
+                    <li class="mb-1">
+                        <a asp-controller="Member" asp-action="Create" class="text-decoration-none fw-semibold" style="color: var(--gymora-primary);">Add your first Member</a>
+                    </li>
+                    <li class="mb-0">
+                        Track your gym from the Dashboard — stats and charts will appear automatically.
+                    </li>
+                </ol>
+                <button type="button" class="gymora-btn-ghost" style="font-size: 12px; padding: 6px 14px;"
+                        onclick="localStorage.setItem('gymora-onboarding-dismissed','1'); this.closest('.gymora-onboarding-banner').style.display='none';">
+                    Got it, dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="row g-4 mb-4">
     <div class="col-md-6 col-xl-3">
         <div class="gymora-card h-100">
@@ -102,16 +142,13 @@
     </div>
 </div>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success mb-0">@TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger mb-0">@TempData["Error"]</div>
-}
-
 @section Scripts {
+    <script>
+        if (localStorage.getItem('gymora-onboarding-dismissed') === '1') {
+            var b = document.querySelector('.gymora-onboarding-banner');
+            if (b) b.style.display = 'none';
+        }
+    </script>
     @if (maxVal > 0)
     {
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

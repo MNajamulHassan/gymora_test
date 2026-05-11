@@ -8,6 +8,9 @@ namespace Gymora.Models.ViewModels.Member
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+        public string? SortBy { get; set; }
+        public string? SortDir { get; set; }
+        public string? StatusFilter { get; set; }
     }
 
     public class MemberRowViewModel

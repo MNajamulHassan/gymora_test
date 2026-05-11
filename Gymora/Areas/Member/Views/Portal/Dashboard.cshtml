@@ -28,16 +28,46 @@
     </div>
 </div>
 
+@{
+    var today = DateTime.Today;
+    bool planExpired = Model.PlanExpiryDate.HasValue && Model.PlanExpiryDate.Value.Date < today;
+    int? daysUntilExpiry = Model.PlanExpiryDate.HasValue
+        ? (int?)(Model.PlanExpiryDate.Value.Date - today).TotalDays
+        : null;
+}
+
 <div class="row g-4">
     <!-- Membership Status -->
     <div class="col-md-4">
         <div class="gymora-card h-100 text-center py-4">
-            <i class="bi bi-patch-check-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-secondary);"></i>
-            <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
-            <span class="gymora-badge success mt-2 d-inline-block">
-                ✓ Active
-            </span>
-            <p class="text-muted small mt-3 mb-0">Your membership is active.</p>
+            @if (!Model.IsActive)
+            {
+                <i class="bi bi-x-circle-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-danger);"></i>
+                <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
+                <span class="gymora-badge danger mt-2 d-inline-block">✗ Inactive</span>
+                <p class="small mt-3 mb-0" style="color: var(--gymora-danger); font-size: 13px;">Your account has been deactivated. Please contact the gym.</p>
+            }
+            else if (planExpired)
+            {
+                <i class="bi bi-x-circle-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-danger);"></i>
+                <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
+                <span class="gymora-badge danger mt-2 d-inline-block">✗ Expired</span>
+                <p class="small mt-3 mb-0" style="color: var(--gymora-danger); font-size: 13px;">Your plan expired on @(Model.PlanExpiryDate!.Value.ToString("MMM dd, yyyy")). Please contact the gym to renew.</p>
+            }
+            else if (daysUntilExpiry.HasValue && daysUntilExpiry.Value >= 0 && daysUntilExpiry.Value <= 7)
+            {
+                <i class="bi bi-exclamation-triangle-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-primary);"></i>
+                <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
+                <span class="gymora-badge warning mt-2 d-inline-block">Expiring Soon</span>
+                <p class="small mt-3 mb-0" style="color: var(--gymora-primary); font-size: 13px;">Your plan expires in @daysUntilExpiry day(s). Contact the gym to renew.</p>
+            }
+            else
+            {
+                <i class="bi bi-patch-check-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-secondary);"></i>
+                <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
+                <span class="gymora-badge success mt-2 d-inline-block">✓ Active</span>
+                <p class="small mt-3 mb-0" style="color: var(--gymora-muted); font-size: 13px;">Your membership is active.</p>
+            }
         </div>
     </div>
 

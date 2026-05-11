@@ -3,6 +3,7 @@ namespace Gymora.Models.ViewModels.Plan
     public class PlanListViewModel
     {
         public List<PlanRowViewModel> Plans { get; set; } = new();
+        public string? StatusFilter { get; set; }
     }
 
     public class PlanRowViewModel

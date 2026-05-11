@@ -4,7 +4,7 @@ namespace Gymora.Services.Interfaces
 {
     public interface IPlanService
     {
-        Task<PlanListViewModel> GetPlansAsync(Guid tenantId);
+        Task<PlanListViewModel> GetPlansAsync(Guid tenantId, string? statusFilter = null);
         Task<PlanFormViewModel> GetCreateModelAsync();
         Task<PlanFormViewModel?> GetEditModelAsync(Guid planId, Guid tenantId);
         Task<(bool Success, string Error)> CreateAsync(PlanFormViewModel model, Guid tenantId);

@@ -17,9 +17,9 @@ namespace Gymora.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? statusFilter = null)
         {
-            var model = await _planService.GetPlansAsync(DemoTenantId);
+            var model = await _planService.GetPlansAsync(DemoTenantId, statusFilter);
             return View(model);
         }
 

@@ -20,6 +20,40 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  window.gymoraConfirm = function (options) {
+    document.getElementById('gymoraConfirmTitle').textContent = options.title || 'Are you sure?';
+    document.getElementById('gymoraConfirmMessage').textContent = options.message || '';
+    document.getElementById('gymoraConfirmIcon').className =
+      'bi flex-shrink-0 ' + (options.iconClass || 'bi-exclamation-triangle-fill');
+
+    var btn = document.getElementById('gymoraConfirmBtn');
+    btn.textContent = options.btnLabel || 'Confirm';
+    btn.className = options.btnClass || 'gymora-btn-danger';
+
+    var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('gymoraConfirmModal'));
+    btn.onclick = function () {
+      modal.hide();
+      if (typeof options.onConfirm === 'function') options.onConfirm();
+    };
+    modal.show();
+  };
+
+  window.gymoraSubmitting = function (btn) {
+    var form = btn.closest('form');
+    if (form && typeof jQuery !== 'undefined' && $(form).valid && !$(form).valid()) {
+      return;
+    }
+    setTimeout(function () {
+      btn.disabled = true;
+      btn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" style="width:14px;height:14px;border-width:2px;"></span>Saving...';
+    }, 0);
+  };
+
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+    new bootstrap.Tooltip(el);
+  });
+
   /* ── 1. Theme toggle ── */
   var themeToggle = document.getElementById('themeToggle');
   var themeIcon   = document.getElementById('themeIcon');
@@ -97,7 +131,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var sidebar     = document.getElementById('gymSidebar');
     var mainEl      = document.getElementById('gymoraMain');
     var mainContent = document.getElementById('mainContent');
-    if (!sidebar || !mainEl) return;
+    if (!sidebar || !mainEl) {
+      /* skip sidebar auto-collapse when layout nodes are missing */
+    } else {
 
     var collapseTimer  = null;
     var isHoverSidebar = false;
@@ -161,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mainEl.style.marginLeft = '240px';
       }
     });
+    }
   }
 
   /* ── 5. Auto-dismiss success alerts after 5s ── */

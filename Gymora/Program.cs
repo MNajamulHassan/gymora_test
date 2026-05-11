@@ -71,7 +71,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/error");
+    app.UseStatusCodePagesWithReExecute("/error/{0}");
     app.UseHsts();
 }
 
@@ -81,6 +82,12 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Error page (status code re-execute uses /error/{code})
+app.MapControllerRoute(
+    name: "error",
+    pattern: "error/{code?}",
+    defaults: new { controller = "Error", action = "Index" });
 
 // 9. Area route
 app.MapControllerRoute(

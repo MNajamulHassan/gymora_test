@@ -35,7 +35,12 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Password" class="gymora-form-label"></label>
-                    <input asp-for="Password" class="form-control" placeholder="Minimum 6 characters" />
+                    <div class="input-group">
+                        <input asp-for="Password" class="form-control" id="memberPasswordInput" placeholder="Minimum 6 characters" autocomplete="new-password" />
+                        <button type="button" class="input-group-text" onclick="gymoraTogglePassword('memberPasswordInput', 'memberPasswordIcon')" style="cursor:pointer;border-left:none;">
+                            <i class="bi bi-eye" id="memberPasswordIcon"></i>
+                        </button>
+                    </div>
                     <div class="form-text text-muted">Member should change this on first login.</div>
                     <span asp-validation-for="Password" class="text-danger small"></span>
                 </div>
@@ -61,6 +66,7 @@
                     <label asp-for="CNIC" class="gymora-form-label"></label>
                     <input asp-for="CNIC" class="form-control" placeholder="XXXXX-XXXXXXX-X" />
                     <span asp-validation-for="CNIC" class="text-danger small"></span>
+                    <div class="form-text" style="color: var(--gymora-muted); font-size: 12px;">Format: XXXXX-XXXXXXX-X (e.g. 35202-1234567-8)</div>
                 </div>
                 <div class="mb-3">
                     <label asp-for="Address" class="gymora-form-label"></label>
@@ -71,6 +77,7 @@
                     <label asp-for="EmergencyContact" class="gymora-form-label"></label>
                     <input asp-for="EmergencyContact" class="form-control" placeholder="Name - Phone number" />
                     <span asp-validation-for="EmergencyContact" class="text-danger small"></span>
+                    <div class="form-text" style="color: var(--gymora-muted); font-size: 12px;">Include both name and phone number (e.g. Ahmed Ali — 0300-1234567)</div>
                 </div>
                 <div class="mb-3">
                     <label asp-for="HealthConditions" class="gymora-form-label"></label>
@@ -88,7 +95,7 @@
         </div>
 
         <div class="d-flex gap-2 mt-2">
-            <button type="submit" class="gymora-btn-primary">
+            <button type="submit" class="gymora-btn-primary" id="mainSubmitBtn" onclick="gymoraSubmitting(this)">
                 <i class="bi bi-check-circle"></i> Save Member
             </button>
             <a asp-controller="Member" asp-action="Index" class="gymora-btn-ghost">
@@ -100,4 +107,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function gymoraTogglePassword(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+    </script>
 }

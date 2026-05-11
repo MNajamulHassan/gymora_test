@@ -1,6 +1,18 @@
 @model MemberListViewModel
 @{
     ViewData["Title"] = "Members";
+    var memberNextDir = Model.SortBy == "name" && (Model.SortDir ?? "asc") == "asc" ? "desc" : "asc";
+    var memberIcon = Model.SortBy == "name"
+        ? ((Model.SortDir ?? "asc") == "asc" ? "bi-chevron-up" : "bi-chevron-down")
+        : "bi-arrow-down-up";
+    var joinedNextDir = Model.SortBy == "joined" && (Model.SortDir ?? "asc") == "asc" ? "desc" : "asc";
+    var joinedIcon = Model.SortBy == "joined"
+        ? ((Model.SortDir ?? "asc") == "asc" ? "bi-chevron-up" : "bi-chevron-down")
+        : "bi-arrow-down-up";
+    var statusNextDir = Model.SortBy == "status" && (Model.SortDir ?? "asc") == "asc" ? "desc" : "asc";
+    var statusIcon = Model.SortBy == "status"
+        ? ((Model.SortDir ?? "asc") == "asc" ? "bi-chevron-up" : "bi-chevron-down")
+        : "bi-arrow-down-up";
 }
 
 @if (TempData["Success"] != null)
@@ -28,7 +40,35 @@
     </a>
 </div>
 
+<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+    <span style="color:var(--gymora-muted);font-size:13px;">Filter:</span>
+    <a asp-controller="Member" asp-action="Index"
+       asp-route-search="@Model.SearchQuery" asp-route-page="1" asp-route-sortBy="@Model.SortBy" asp-route-sortDir="@Model.SortDir"
+       asp-route-statusFilter=""
+       class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1"
+       style="padding:6px 14px;font-size:12px;@(string.IsNullOrEmpty(Model.StatusFilter) ? "background:var(--gymora-primary-dim);color:var(--gymora-primary);border-color:var(--gymora-primary);" : "")">
+        All
+    </a>
+    <a asp-controller="Member" asp-action="Index"
+       asp-route-search="@Model.SearchQuery" asp-route-page="1" asp-route-sortBy="@Model.SortBy" asp-route-sortDir="@Model.SortDir"
+       asp-route-statusFilter="active"
+       class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1"
+       style="padding:6px 14px;font-size:12px;@(Model.StatusFilter == "active" ? "background:rgba(183,240,114,0.12);color:var(--gymora-secondary);border-color:rgba(183,240,114,0.3);" : "")">
+        <i class="bi bi-circle-fill" style="font-size:7px;color:var(--gymora-secondary);"></i> Active
+    </a>
+    <a asp-controller="Member" asp-action="Index"
+       asp-route-search="@Model.SearchQuery" asp-route-page="1" asp-route-sortBy="@Model.SortBy" asp-route-sortDir="@Model.SortDir"
+       asp-route-statusFilter="inactive"
+       class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1"
+       style="padding:6px 14px;font-size:12px;@(Model.StatusFilter == "inactive" ? "background:rgba(224,82,82,0.12);color:var(--gymora-danger);border-color:rgba(224,82,82,0.3);" : "")">
+        <i class="bi bi-circle-fill" style="font-size:7px;color:var(--gymora-danger);"></i> Inactive
+    </a>
+</div>
+
 <form asp-controller="Member" asp-action="Index" method="get" class="d-flex align-items-stretch gap-2 mb-4">
+    <input type="hidden" name="sortBy" value="@Model.SortBy" />
+    <input type="hidden" name="sortDir" value="@Model.SortDir" />
+    <input type="hidden" name="statusFilter" value="@Model.StatusFilter" />
     <div class="flex-grow-1">
         <input asp-for="SearchQuery" name="search" class="gymora-input w-100"
                placeholder="Search by name, email or phone..." />
@@ -41,6 +81,7 @@
     @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
     {
         <a asp-controller="Member" asp-action="Index"
+           asp-route-sortBy="@Model.SortBy" asp-route-sortDir="@Model.SortDir" asp-route-statusFilter="@Model.StatusFilter"
            class="gymora-btn-ghost d-inline-flex align-items-center justify-content-center flex-shrink-0 text-decoration-none">
             Clear
         </a>
@@ -75,11 +116,41 @@ else
                 <thead>
                     <tr>
                         <th style="width:40px;">#</th>
-                        <th>Member</th>
+                        <th>
+                            <a asp-controller="Member" asp-action="Index"
+                               asp-route-search="@Model.SearchQuery"
+                               asp-route-page="1"
+                               asp-route-sortBy="name"
+                               asp-route-sortDir="@memberNextDir"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               style="color:var(--gymora-text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                Member <i class="bi @memberIcon" style="color:var(--gymora-muted);font-size:11px;"></i>
+                            </a>
+                        </th>
                         <th class="col-phone">Phone</th>
                         <th class="col-gender">Gender</th>
-                        <th class="col-joined">Joined</th>
-                        <th style="width:90px;">Status</th>
+                        <th class="col-joined">
+                            <a asp-controller="Member" asp-action="Index"
+                               asp-route-search="@Model.SearchQuery"
+                               asp-route-page="1"
+                               asp-route-sortBy="joined"
+                               asp-route-sortDir="@joinedNextDir"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               style="color:var(--gymora-text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                Joined <i class="bi @joinedIcon" style="color:var(--gymora-muted);font-size:11px;"></i>
+                            </a>
+                        </th>
+                        <th style="width:90px;">
+                            <a asp-controller="Member" asp-action="Index"
+                               asp-route-search="@Model.SearchQuery"
+                               asp-route-page="1"
+                               asp-route-sortBy="status"
+                               asp-route-sortDir="@statusNextDir"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               style="color:var(--gymora-text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                                Status <i class="bi @statusIcon" style="color:var(--gymora-muted);font-size:11px;"></i>
+                            </a>
+                        </th>
                         <th style="width:180px;">Actions</th>
                     </tr>
                 </thead>
@@ -135,13 +206,13 @@ else
                                         @if (member.IsActive)
                                         {
                                             <form asp-controller="Member" asp-action="Deactivate"
-                                                  asp-route-id="@member.Id" method="post" class="m-0">
+                                                  asp-route-id="@member.Id" method="post" class="m-0" id="deactivateForm-@member.Id">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit"
+                                                <button type="button"
                                                         class="gymora-btn-danger d-inline-flex align-items-center gap-1"
                                                         style="padding:6px 12px;font-size:12px;white-space:nowrap;"
                                                         title="Deactivate member"
-                                                        onclick="event.stopPropagation(); return confirm('Deactivate @Html.Raw(member.FullName.Replace("'","\\'")), their access will be suspended.');">
+                                                        onclick="event.stopPropagation(); gymoraConfirm({ title:'Deactivate Member', message:'This member will lose access but their data is kept safely.', btnLabel:'Deactivate', iconClass:'bi-person-dash-fill', onConfirm: function(){ document.getElementById('deactivateForm-@(member.Id)').submit(); } });">
                                                     <i class="bi bi-person-dash-fill"></i>
                                                     <span>Deactivate</span>
                                                 </button>
@@ -156,7 +227,7 @@ else
                                                         class="d-inline-flex align-items-center gap-1"
                                                         style="padding:6px 12px;font-size:12px;white-space:nowrap;background:rgba(183,240,114,0.12);color:#B7F072;border:1px solid rgba(183,240,114,0.3);border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;"
                                                         title="Reactivate member"
-                                                        onclick="event.stopPropagation(); return confirm('Reactivate @Html.Raw(member.FullName.Replace("'","\\'")), they will regain access.');">
+                                                        onclick="event.stopPropagation(); return confirm('Reactivate @Html.Raw((member.FullName ?? "").Replace("'","\\'")), they will regain access.');">
                                                     <i class="bi bi-person-check-fill"></i>
                                                     <span>Reactivate</span>
                                                 </button>
@@ -180,6 +251,9 @@ else
                 <a asp-controller="Member" asp-action="Index"
                    asp-route-search="@Model.SearchQuery"
                    asp-route-page="@(Model.PageNumber - 1)"
+                   asp-route-sortBy="@Model.SortBy"
+                   asp-route-sortDir="@Model.SortDir"
+                   asp-route-statusFilter="@Model.StatusFilter"
                    class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1">
                     <i class="bi bi-chevron-left"></i> Prev
                 </a>
@@ -196,6 +270,9 @@ else
                     <a asp-controller="Member" asp-action="Index"
                        asp-route-search="@Model.SearchQuery"
                        asp-route-page="@p"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDir="@Model.SortDir"
+                       asp-route-statusFilter="@Model.StatusFilter"
                        class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center justify-content-center"
                        style="min-width:40px;padding:8px 12px;">
                         @p
@@ -207,6 +284,9 @@ else
                 <a asp-controller="Member" asp-action="Index"
                    asp-route-search="@Model.SearchQuery"
                    asp-route-page="@(Model.PageNumber + 1)"
+                   asp-route-sortBy="@Model.SortBy"
+                   asp-route-sortDir="@Model.SortDir"
+                   asp-route-statusFilter="@Model.StatusFilter"
                    class="gymora-btn-ghost text-decoration-none d-inline-flex align-items-center gap-1">
                     Next <i class="bi bi-chevron-right"></i>
                 </a>

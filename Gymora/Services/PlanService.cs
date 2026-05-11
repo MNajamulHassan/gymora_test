@@ -15,7 +15,7 @@ namespace Gymora.Services
             _db = db;
         }
 
-        public async Task<PlanListViewModel> GetPlansAsync(Guid tenantId)
+        public async Task<PlanListViewModel> GetPlansAsync(Guid tenantId, string? statusFilter = null)
         {
             var plans = await _db.MembershipPlans
                 .Where(p => p.TenantId == tenantId)
@@ -33,7 +33,12 @@ namespace Gymora.Services
                 })
                 .ToListAsync();
 
-            return new PlanListViewModel { Plans = plans };
+            if (statusFilter == "active")
+                plans = plans.Where(p => p.IsActive).ToList();
+            else if (statusFilter == "inactive")
+                plans = plans.Where(p => !p.IsActive).ToList();
+
+            return new PlanListViewModel { Plans = plans, StatusFilter = statusFilter };
         }
 
         public Task<PlanFormViewModel> GetCreateModelAsync()

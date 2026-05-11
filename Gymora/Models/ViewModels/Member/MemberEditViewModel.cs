@@ -24,6 +24,7 @@ namespace Gymora.Models.ViewModels.Member
         public DateTime? DateOfBirth { get; set; }
 
         [StringLength(15)]
+        [RegularExpression(@"^$|^\d{5}-\d{7}-\d$", ErrorMessage = "CNIC must follow the format: XXXXX-XXXXXXX-X")]
         [Display(Name = "CNIC")]
         public string? CNIC { get; set; }
 
