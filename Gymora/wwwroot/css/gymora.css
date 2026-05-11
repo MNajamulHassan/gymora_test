@@ -1,5 +1,5 @@
 /* ============================================================
-   Gymora — Complete Dark Theme
+   Gymora — Complete Theme (Dark + Light)
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -67,7 +67,6 @@ a { text-decoration: none; }
   margin-bottom: 8px;
 }
 
-.gymora-logo span { color: var(--gymora-primary); }
 
 .gymora-nav-section-label {
   font-size: 10px;
@@ -169,10 +168,20 @@ a { text-decoration: none; }
   display: flex;
   align-items: center;
   padding: 0 24px;
-  gap: 16px;
+  gap: 12px;
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+/* Logo shown in topbar on mobile (hidden on desktop since sidebar has it) */
+.gymora-topbar-logo {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gymora-text);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: -0.3px;
 }
 
 .gymora-topbar-title {
@@ -331,7 +340,7 @@ a { text-decoration: none; }
 
 .form-select option { background: var(--gymora-surface); color: var(--gymora-text); }
 
-/* ── Input group — join icon + input cleanly ── */
+/* ── Input group ── */
 .input-group .input-group-text {
   border-radius: 8px 0 0 8px !important;
   border-right: none !important;
@@ -419,7 +428,7 @@ a { text-decoration: none; }
 .form-check-label { color: var(--gymora-muted); }
 .input-group-text { background: var(--gymora-surface-2); border: 1px solid var(--gymora-border); color: var(--gymora-muted); }
 
-/* ── Theme Toggle ── */
+/* ── Standalone theme toggle (unauthenticated pages) ── */
 .gymora-theme-toggle {
   width: 36px;
   height: 36px;
@@ -438,6 +447,18 @@ a { text-decoration: none; }
 
 .gymora-theme-toggle:hover { color: var(--gymora-text); border-color: var(--gymora-muted); background: rgba(255,255,255,0.05); }
 
+/* ── Theme pill inside dropdown ── */
+.gymora-theme-pill {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--gymora-primary-dim);
+  color: var(--gymora-primary);
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
 /* ── Avatar dropdown ── */
 .gymora-user-dropdown { position: relative; }
 .gymora-user-trigger {
@@ -451,7 +472,7 @@ a { text-decoration: none; }
 .gymora-user-trigger.open .chevron { transform: rotate(180deg); }
 
 .gymora-dropdown-menu {
-  position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px;
+  position: absolute; top: calc(100% + 8px); right: 0; min-width: 220px;
   background: var(--gymora-surface); border: 1px solid var(--gymora-border);
   border-radius: 12px; padding: 8px; z-index: 300;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
@@ -602,11 +623,10 @@ input:-webkit-autofill:active {
 .gymora-sidebar-overlay.show { display: block; }
 
 /* ============================================================
-   RESPONSIVE — Mobile First
+   RESPONSIVE — Mobile
    ============================================================ */
 
 @media (max-width: 991px) {
-  /* Sidebar: hidden off-screen on mobile */
   .gymora-sidebar {
     transform: translateX(-240px);
     z-index: 101;
@@ -615,7 +635,6 @@ input:-webkit-autofill:active {
     transform: translateX(0);
   }
 
-  /* CRITICAL: main area must have NO left margin on mobile */
   .gymora-main {
     margin-left: 0 !important;
     width: 100% !important;
@@ -623,7 +642,6 @@ input:-webkit-autofill:active {
 
   .gymora-content {
     padding: 16px;
-    /* Space for bottom nav pill */
     padding-bottom: 100px;
     width: 100%;
     min-width: 0;
@@ -637,7 +655,6 @@ input:-webkit-autofill:active {
     font-size: 15px;
   }
 
-  /* Table: hide low-priority columns */
   .col-phone, .col-gender, .col-joined { display: none; }
 
   .table-responsive {
@@ -645,14 +662,13 @@ input:-webkit-autofill:active {
     width: 100%;
   }
 
-  /* Stack action buttons vertically on very small screens */
   .gymora-table td { padding: 10px 12px; }
   .gymora-table th { padding: 8px 12px; }
 }
 
 @media (min-width: 992px) {
   .gymora-mobile-nav { display: none !important; }
-  /* Column hiding classes don't apply on desktop */
+  .gymora-topbar-logo { display: none !important; }
   .col-phone, .col-gender, .col-joined { display: table-cell; }
 }
 
@@ -683,6 +699,7 @@ input:-webkit-autofill:active {
 [data-theme="light"] .gymora-nav-link.active { color: #1A1A1A; background: rgba(225,99,73,0.1); border-left: 3px solid #E16349; }
 [data-theme="light"] .gymora-topbar { background: #FFFFFF; border-bottom: 1px solid #E2E2DC; }
 [data-theme="light"] .gymora-topbar-title { color: #1A1A1A; }
+[data-theme="light"] .gymora-topbar-logo { color: #1A1A1A; }
 [data-theme="light"] .gymora-main { background: #F5F5F0; }
 [data-theme="light"] .gymora-content { background: #F5F5F0; }
 [data-theme="light"] .gymora-card { background: #FFFFFF; border: 1px solid #E2E2DC; }

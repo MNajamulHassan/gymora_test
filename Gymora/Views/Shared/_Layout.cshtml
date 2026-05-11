@@ -9,7 +9,6 @@
     <link rel="stylesheet" asp-href-include="~/css/gymora.css" asp-append-version="true" href="~/css/gymora.css" />
 
     <style>
-        /* Coming soon label */
         .gymora-nav-link.coming-soon { opacity: 0.45; cursor: not-allowed; }
         .gymora-nav-link.coming-soon:hover { background: transparent !important; color: var(--gymora-muted) !important; }
         .gymora-sidebar:not(.collapsed) .gymora-nav-link.coming-soon { position: relative; }
@@ -29,7 +28,6 @@
         }
     </style>
 
-    {{-- Apply theme immediately to prevent flash --}}
     <script>
         (function () {
             var t = localStorage.getItem('gymora-theme') || 'dark';
@@ -72,24 +70,24 @@
                 {
                     <a class="gymora-logo d-flex text-decoration-none"
                        asp-area="Member" asp-controller="Portal" asp-action="Dashboard">
-                        <span style="flex-shrink:0;">&#x26A1;</span>
-                        <span class="gymora-logo-text ms-2">Gym<span style="color:var(--gymora-primary)">ora</span></span>
+                        <span style="flex-shrink:0;color:var(--gymora-primary);">&#x26A1;</span>
+                        <span class="gymora-logo-text ms-2" style="color:var(--gymora-text);">Gym<span style="color:var(--gymora-primary);">ora</span></span>
                     </a>
                 }
                 else
                 {
                     <a class="gymora-logo d-flex text-decoration-none"
                        asp-controller="Dashboard" asp-action="Index">
-                        <span style="flex-shrink:0;">&#x26A1;</span>
-                        <span class="gymora-logo-text ms-2">Gym<span style="color:var(--gymora-primary)">ora</span></span>
+                        <span style="flex-shrink:0;color:var(--gymora-primary);">&#x26A1;</span>
+                        <span class="gymora-logo-text ms-2" style="color:var(--gymora-text);">Gym<span style="color:var(--gymora-primary);">ora</span></span>
                     </a>
                 }
             }
             else
             {
                 <a class="gymora-logo d-flex text-decoration-none" asp-controller="Auth" asp-action="Login">
-                    <span style="flex-shrink:0;">&#x26A1;</span>
-                    <span class="gymora-logo-text ms-2">Gym<span style="color:var(--gymora-primary)">ora</span></span>
+                    <span style="flex-shrink:0;color:var(--gymora-primary);">&#x26A1;</span>
+                    <span class="gymora-logo-text ms-2" style="color:var(--gymora-text);">Gym<span style="color:var(--gymora-primary);">ora</span></span>
                 </a>
             }
 
@@ -100,7 +98,7 @@
                     <div class="gymora-nav-section-label">Main</div>
                     <a class="gymora-nav-link @(isHomeActive ? "active" : "")"
                        asp-controller="Dashboard" asp-action="Index" data-label="Dashboard">
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="bi bi-house-fill"></i>
                         <span class="gymora-nav-link-text">Dashboard</span>
                     </a>
                     <a class="gymora-nav-link @(isMembersActive ? "active" : "")"
@@ -130,7 +128,7 @@
                     <div class="gymora-nav-section-label">Menu</div>
                     <a class="gymora-nav-link @(isHomeActive ? "active" : "")"
                        asp-area="Member" asp-controller="Portal" asp-action="Dashboard" data-label="Dashboard">
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="bi bi-house-fill"></i>
                         <span class="gymora-nav-link-text">Dashboard</span>
                     </a>
                     <a class="gymora-nav-link @(isProfileActive ? "active" : "")"
@@ -168,13 +166,15 @@
 
             <!-- Topbar -->
             <header class="gymora-topbar">
-                <span class="gymora-topbar-title">@ViewData["Title"]</span>
-                <div class="gymora-topbar-right">
-                    <button class="gymora-theme-toggle" id="themeToggle" type="button"
-                            title="Toggle theme" aria-label="Toggle theme">
-                        <i class="bi bi-moon-fill" id="themeIcon"></i>
-                    </button>
 
+                <!-- Logo (mobile: always visible | desktop: hidden since sidebar has it) -->
+                <a class="gymora-topbar-logo d-lg-none text-decoration-none" href="/">
+                    <span>&#x26A1;</span> Gym<span style="color:var(--gymora-primary)">ora</span>
+                </a>
+
+                <span class="gymora-topbar-title">@ViewData["Title"]</span>
+
+                <div class="gymora-topbar-right">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         var displayName = User.Identity.Name?.Trim() ?? "";
@@ -192,6 +192,7 @@
                                     <div class="name">@displayName</div>
                                     <div class="email">@User.Identity.Name</div>
                                 </div>
+
                                 @if (User.IsInRole("Member"))
                                 {
                                     <a class="gymora-dropdown-item"
@@ -205,8 +206,17 @@
                                         <i class="bi bi-person-circle"></i> Account Settings
                                     </a>
                                 }
+
+                                <!-- Theme toggle row inside dropdown — pill removed, just the icon+label button -->
                                 <div class="gymora-dropdown-divider"></div>
-                                <form asp-controller="Auth" asp-action="Logout" method="post">
+                                <button type="button" class="gymora-dropdown-item" id="themeToggle">
+                                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                                    <span id="themeLabel">Dark Mode</span>
+                                </button>
+
+                                <div class="gymora-dropdown-divider"></div>
+                                @* asp-area="" ensures logout always routes to /Auth/Logout, even when inside the Member area *@
+                                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="gymora-dropdown-item danger">
                                         <i class="bi bi-box-arrow-right"></i> Log out
@@ -214,6 +224,14 @@
                                 </form>
                             </div>
                         </div>
+                    }
+                    else
+                    {
+                        <!-- Not authenticated: show standalone theme toggle -->
+                        <button class="gymora-theme-toggle" id="themeToggle" type="button"
+                                title="Toggle theme" aria-label="Toggle theme">
+                            <i class="bi bi-moon-fill" id="themeIcon"></i>
+                        </button>
                     }
                 </div>
             </header>
@@ -234,20 +252,16 @@
 
             @if (User.IsInRole("GymOwner") || User.IsInRole("Receptionist"))
             {
-                <!-- Left 1: Members -->
                 <a class="gymora-nav-mobile-item @(isMembersActive ? "active" : "")"
-                   asp-controller="Member" asp-action="Index"
-                   title="Members">
+                   asp-controller="Member" asp-action="Index" title="Members">
                     <i class="bi bi-people"></i>
                     <span>Members</span>
                 </a>
 
-                <!-- Left 2: Plans (GymOwner) or disabled -->
                 @if (User.IsInRole("GymOwner"))
                 {
                     <a class="gymora-nav-mobile-item @(isPlansActive ? "active" : "")"
-                       asp-controller="Plan" asp-action="Index"
-                       title="Plans">
+                       asp-controller="Plan" asp-action="Index" title="Plans">
                         <i class="bi bi-card-list"></i>
                         <span>Plans</span>
                     </a>
@@ -260,23 +274,19 @@
                     </span>
                 }
 
-                <!-- CENTER: Home bubble -->
                 <a class="gymora-mobile-home @(isHomeActive ? "active" : "")"
-                   asp-controller="Dashboard" asp-action="Index"
-                   title="Dashboard (Home)">
+                   asp-controller="Dashboard" asp-action="Index" title="Dashboard (Home)">
                     <div class="gymora-mobile-home-bubble">
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="bi bi-house-fill"></i>
                     </div>
                     <span>Home</span>
                 </a>
 
-                <!-- Right 1: Attendance (soon) -->
                 <span class="gymora-nav-mobile-item disabled" title="Attendance (coming soon)">
                     <i class="bi bi-calendar-check"></i>
                     <span>Attend</span>
                 </span>
 
-                <!-- Right 2: Payments (soon) -->
                 <span class="gymora-nav-mobile-item disabled" title="Payments (coming soon)">
                     <i class="bi bi-cash-stack"></i>
                     <span>Pay</span>
@@ -284,37 +294,30 @@
             }
             else if (User.IsInRole("Member"))
             {
-                <!-- Left 1: Profile -->
                 <a class="gymora-nav-mobile-item @(isProfileActive ? "active" : "")"
-                   asp-area="Member" asp-controller="Portal" asp-action="EditProfile"
-                   title="My Profile">
+                   asp-area="Member" asp-controller="Portal" asp-action="EditProfile" title="My Profile">
                     <i class="bi bi-person-circle"></i>
                     <span>Profile</span>
                 </a>
 
-                <!-- Left 2: Attendance (soon) -->
                 <span class="gymora-nav-mobile-item disabled" title="Attendance (coming soon)">
                     <i class="bi bi-calendar-check"></i>
                     <span>Attend</span>
                 </span>
 
-                <!-- CENTER: Home bubble -->
                 <a class="gymora-mobile-home @(isHomeActive ? "active" : "")"
-                   asp-area="Member" asp-controller="Portal" asp-action="Dashboard"
-                   title="Dashboard (Home)">
+                   asp-area="Member" asp-controller="Portal" asp-action="Dashboard" title="Dashboard (Home)">
                     <div class="gymora-mobile-home-bubble">
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="bi bi-house-fill"></i>
                     </div>
                     <span>Home</span>
                 </a>
 
-                <!-- Right 1: Payments (soon) -->
                 <span class="gymora-nav-mobile-item disabled" title="Payments (coming soon)">
                     <i class="bi bi-receipt"></i>
                     <span>Pay</span>
                 </span>
 
-                <!-- Right 2: placeholder -->
                 <span class="gymora-nav-mobile-item disabled">
                     <i class="bi bi-gear"></i>
                     <span>More</span>

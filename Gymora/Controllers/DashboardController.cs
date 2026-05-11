@@ -24,27 +24,44 @@ namespace Gymora.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // ── Member counts ─────────────────────────────────────────────
             var membersInRole = await _userManager.GetUsersInRoleAsync("Member");
             var tenantMembers = membersInRole
                 .Where(u => u.TenantId == DemoTenantId && !u.IsDeleted)
                 .ToList();
 
             var now = DateTime.Today;
-            var membersJoinedThisMonth = await _db.Users
-                .Where(u =>
-                    u.TenantId == DemoTenantId &&
-                    !u.IsDeleted &&
-                    u.JoinDate.HasValue &&
-                    u.JoinDate.Value.Month == now.Month &&
-                    u.JoinDate.Value.Year == now.Year)
-                .CountAsync();
+            var membersJoinedThisMonth = tenantMembers.Count(u =>
+                u.JoinDate.HasValue &&
+                u.JoinDate.Value.Month == now.Month &&
+                u.JoinDate.Value.Year == now.Year);
+
+            // ── Last 12 months of join activity (real DB data) ────────────
+            // Build the 12 month buckets ending this month
+            var monthBuckets = Enumerable.Range(0, 12)
+                .Select(i => now.AddMonths(-11 + i))   // oldest first
+                .Select(d => new { d.Year, d.Month })
+                .ToList();
+
+            // Pull all join dates for tenant members in one go (already in memory)
+            var joinDates = tenantMembers
+                .Where(u => u.JoinDate.HasValue)
+                .Select(u => u.JoinDate!.Value)
+                .ToList();
+
+            var monthlyJoins = monthBuckets.Select(b => new MonthlyJoinCount
+            {
+                Label = new DateTime(b.Year, b.Month, 1).ToString("MMM yy"),
+                Count = joinDates.Count(d => d.Year == b.Year && d.Month == b.Month)
+            }).ToList();
 
             var model = new AdminDashboardViewModel
             {
-                TotalMembers = tenantMembers.Count,
-                ActiveMembers = tenantMembers.Count(m => m.IsActive),
-                InactiveMembers = tenantMembers.Count(m => !m.IsActive),
-                MembersJoinedThisMonth = membersJoinedThisMonth
+                TotalMembers         = tenantMembers.Count,
+                ActiveMembers        = tenantMembers.Count(m => m.IsActive),
+                InactiveMembers      = tenantMembers.Count(m => !m.IsActive),
+                MembersJoinedThisMonth = membersJoinedThisMonth,
+                MonthlyJoins         = monthlyJoins
             };
 
             return View(model);

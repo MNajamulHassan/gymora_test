@@ -1,6 +1,13 @@
 @model Gymora.Models.ViewModels.Dashboard.AdminDashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+
+    // Serialize chart data server-side so JS can consume it safely
+    var chartLabels = System.Text.Json.JsonSerializer.Serialize(
+        Model.MonthlyJoins.Select(m => m.Label).ToList());
+    var chartData = System.Text.Json.JsonSerializer.Serialize(
+        Model.MonthlyJoins.Select(m => m.Count).ToList());
+    var maxVal = Model.MonthlyJoins.Any() ? Model.MonthlyJoins.Max(m => m.Count) : 0;
 }
 
 <div class="row g-4 mb-4">
@@ -58,10 +65,20 @@
             <div class="gymora-card-header mb-3">
                 <div>
                     <div class="gymora-card-title mb-1">Member Growth</div>
-                    <div style="color:#9A9A9A; font-size:12px;">Monthly overview</div>
+                    <div style="color:#9A9A9A; font-size:12px;">New members per month — last 12 months</div>
                 </div>
             </div>
-            <canvas id="memberChart" height="200"></canvas>
+            @if (maxVal == 0)
+            {
+                <div class="text-center py-4" style="color:var(--gymora-muted);font-size:13px;">
+                    <i class="bi bi-bar-chart d-block mb-2" style="font-size:2rem;"></i>
+                    No member join data yet. Add members to see the chart.
+                </div>
+            }
+            else
+            {
+                <canvas id="memberChart" height="200"></canvas>
+            }
         </div>
     </div>
     <div class="col-lg-4">
@@ -95,41 +112,55 @@
 }
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script>
-      var ctx = document.getElementById('memberChart');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Feb','Mar','Apr','May','Jun',
-                   'Jul','Aug','Sep','Oct','Nov','Dec','Jan'],
-          datasets: [{
-            data: [30,25,20,45,38,72,55,48,60,32,18,42],
-            backgroundColor: function(context) {
-              var index = context.dataIndex;
-              var highlight = [5,8];
-              return highlight.includes(index)
-                ? '#E16349'
-                : 'rgba(225,99,73,0.25)';
+    @if (maxVal > 0)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        <script>
+          var chartLabels = @Html.Raw(chartLabels);
+          var chartData   = @Html.Raw(chartData);
+          var maxVal      = @maxVal;
+
+          // Highlight the current (last) month bar
+          var currentMonth = new Date().getMonth(); // 0-based, not used — just highlight the last entry
+          var highlightIndex = chartData.length - 1;
+
+          var ctx = document.getElementById('memberChart');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: chartLabels,
+              datasets: [{
+                data: chartData,
+                backgroundColor: function(context) {
+                  return context.dataIndex === highlightIndex
+                    ? '#E16349'
+                    : 'rgba(225,99,73,0.25)';
+                },
+                borderRadius: 4,
+                borderSkipped: false
+              }]
             },
-            borderRadius: 4,
-            borderSkipped: false,
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: {
-              grid: { color: '#2E2E2E' },
-              ticks: { color: '#9A9A9A', font: { size: 11 } }
-            },
-            y: {
-              grid: { color: '#2E2E2E' },
-              ticks: { color: '#9A9A9A', font: { size: 11 } }
+            options: {
+              responsive: true,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: {
+                  grid: { color: '#2E2E2E' },
+                  ticks: { color: '#9A9A9A', font: { size: 11 } }
+                },
+                y: {
+                  grid: { color: '#2E2E2E' },
+                  ticks: {
+                    color: '#9A9A9A',
+                    font: { size: 11 },
+                    stepSize: 1,
+                    precision: 0
+                  },
+                  beginAtZero: true
+                }
+              }
             }
-          }
-        }
-      });
-    </script>
+          });
+        </script>
+    }
 }

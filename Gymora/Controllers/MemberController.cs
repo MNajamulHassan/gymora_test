@@ -89,6 +89,7 @@ namespace Gymora.Controllers
         }
 
         // POST /Member/Deactivate/{id}
+        // Redirects back to Index so the user stays on the members list
         [HttpPost]
         [Authorize(Roles = "GymOwner")]
         [ValidateAntiForgeryToken]
@@ -100,10 +101,11 @@ namespace Gymora.Controllers
             else
                 TempData["Error"] = error;
 
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToAction(nameof(Index));
         }
 
         // POST /Member/Reactivate/{id}
+        // Redirects back to Index so the user stays on the members list
         [HttpPost]
         [Authorize(Roles = "GymOwner")]
         [ValidateAntiForgeryToken]
@@ -115,7 +117,7 @@ namespace Gymora.Controllers
             else
                 TempData["Error"] = error;
 
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToAction(nameof(Index));
         }
 
         // POST /Member/Delete/{id}
