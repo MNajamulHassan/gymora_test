@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gymora", "Gymora.csproj", "{EB3C7ADC-1AE7-62B4-85E6-3BF885CFBD4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB3C7ADC-1AE7-62B4-85E6-3BF885CFBD4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3C7ADC-1AE7-62B4-85E6-3BF885CFBD4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB3C7ADC-1AE7-62B4-85E6-3BF885CFBD4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB3C7ADC-1AE7-62B4-85E6-3BF885CFBD4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {612F363B-C31E-4201-9A87-4BAB40B559D5}
+	EndGlobalSection
+EndGlobal
