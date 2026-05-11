@@ -5,13 +5,13 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="fw-bold mb-0"><i class="bi bi-pencil-square"></i> Edit Member Profile</h3>
-    <a asp-controller="Member" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">
+    <a asp-controller="Member" asp-action="Detail" asp-route-id="@Model.Id" class="gymora-btn-ghost">
         <i class="bi bi-arrow-left"></i> Back
     </a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body p-4">
+<div class="gymora-card">
+    <div class="p-4">
         <form asp-controller="Member" asp-action="Edit" asp-route-id="@Model.Id" method="post">
             @Html.AntiForgeryToken()
             <input asp-for="Id" type="hidden" />
@@ -19,7 +19,7 @@
 
             <!-- Email (read-only) -->
             <div class="mb-4">
-                <label class="form-label fw-semibold">Email</label>
+                <label class="gymora-form-label">Email</label>
                 <input type="text" value="@Model.Email" class="form-control" disabled />
                 <div class="form-text text-muted">Email cannot be changed here.</div>
             </div>
@@ -28,17 +28,17 @@
                 <!-- Left Column -->
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label asp-for="FullName" class="form-label fw-semibold"></label>
+                        <label asp-for="FullName" class="gymora-form-label"></label>
                         <input asp-for="FullName" class="form-control" />
                         <span asp-validation-for="FullName" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                        <label asp-for="PhoneNumber" class="gymora-form-label"></label>
                         <input asp-for="PhoneNumber" class="form-control" />
                         <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="Gender" class="form-label fw-semibold">Gender</label>
+                        <label asp-for="Gender" class="gymora-form-label">Gender</label>
                         <select asp-for="Gender" class="form-select">
                             <option value="">-- Select Gender --</option>
                             <option value="Male">Male</option>
@@ -47,12 +47,12 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="DateOfBirth" class="form-label fw-semibold"></label>
+                        <label asp-for="DateOfBirth" class="gymora-form-label"></label>
                         <input asp-for="DateOfBirth" class="form-control" type="date" />
                         <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="CNIC" class="form-label fw-semibold"></label>
+                        <label asp-for="CNIC" class="gymora-form-label"></label>
                         <input asp-for="CNIC" class="form-control" />
                         <span asp-validation-for="CNIC" class="text-danger small"></span>
                     </div>
@@ -61,31 +61,31 @@
                 <!-- Right Column -->
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label asp-for="Address" class="form-label fw-semibold"></label>
+                        <label asp-for="Address" class="gymora-form-label"></label>
                         <input asp-for="Address" class="form-control" />
                         <span asp-validation-for="Address" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="EmergencyContact" class="form-label fw-semibold"></label>
+                        <label asp-for="EmergencyContact" class="gymora-form-label"></label>
                         <input asp-for="EmergencyContact" class="form-control" />
                         <span asp-validation-for="EmergencyContact" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="HealthConditions" class="form-label fw-semibold"></label>
+                        <label asp-for="HealthConditions" class="gymora-form-label"></label>
                         <textarea asp-for="HealthConditions" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="HealthConditions" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="FitnessGoals" class="form-label fw-semibold"></label>
+                        <label asp-for="FitnessGoals" class="gymora-form-label"></label>
                         <textarea asp-for="FitnessGoals" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="FitnessGoals" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="CurrentPlanId" class="form-label fw-semibold"></label>
+                        <label asp-for="CurrentPlanId" class="gymora-form-label"></label>
                         <select asp-for="CurrentPlanId" asp-items="Model.PlanOptions" class="form-select"></select>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="PlanStartDate" class="form-label fw-semibold"></label>
+                        <label asp-for="PlanStartDate" class="gymora-form-label"></label>
                         <input asp-for="PlanStartDate" class="form-control" type="date" />
                         <span asp-validation-for="PlanStartDate" class="text-danger small"></span>
                         <div class="form-text">Expiry auto-calculates from selected plan duration.</div>
@@ -100,11 +100,11 @@
             </div>
 
             <div class="d-flex gap-2 mt-2">
-                <button type="submit" class="btn btn-primary px-4">
+                <button type="submit" class="gymora-btn-primary">
                     <i class="bi bi-check-circle"></i> Save Changes
                 </button>
                 <a asp-controller="Member" asp-action="Detail" asp-route-id="@Model.Id"
-                   class="btn btn-outline-secondary">
+                   class="gymora-btn-ghost">
                     Cancel
                 </a>
             </div>

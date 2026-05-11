@@ -212,6 +212,30 @@ namespace Gymora.Services
             return (true, string.Empty);
         }
 
+        public async Task<(bool Success, string Error)> DeleteMemberAsync(string userId, Guid tenantId)
+        {
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u =>
+                    u.Id == userId &&
+                    u.TenantId == tenantId);
+
+            if (user == null)
+                return (false, "Member not found.");
+
+            user.IsActive = false;
+            user.IsDeleted = true;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ",
+                    result.Errors.Select(e => e.Description));
+                return (false, errors);
+            }
+
+            return (true, string.Empty);
+        }
+
         public async Task<MemberDetailViewModel?> GetOwnProfileAsync(string userId)
         {
             var user = await _db.Users

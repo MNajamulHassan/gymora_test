@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Scan to Open on Phone";
+    Layout = "_Layout";
+}
+
+<div style="display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            min-height:60vh; gap:24px; text-align:center;
+            padding:24px;">
+
+    <div class="gymora-card-title" 
+         style="font-size:20px;">
+        Open Gymora on Your Phone
+    </div>
+
+    <p style="color:#9A9A9A; font-size:14px; 
+              max-width:300px; margin:0;">
+        Make sure your phone is on the same WiFi, 
+        then scan this QR code.
+    </p>
+
+    <div id="qrcode"
+         style="background:#FFFFFF; padding:16px;
+                border-radius:12px;"></div>
+
+    <div class="gymora-card" 
+         style="max-width:340px; width:100%;">
+        <div style="color:#9A9A9A; font-size:12px; 
+                    margin-bottom:8px;">
+            Or type this URL on your phone:
+        </div>
+        <div style="color:#E16349; font-size:14px;
+                    font-weight:600; 
+                    word-break:break-all;">
+            @ViewBag.AppUrl
+        </div>
+    </div>
+
+    <div style="color:#9A9A9A; font-size:11px;">
+        ⚠️ Only works in Development mode
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    new QRCode(document.getElementById("qrcode"), {
+        text: "@ViewBag.AppUrl",
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+</script>
+}

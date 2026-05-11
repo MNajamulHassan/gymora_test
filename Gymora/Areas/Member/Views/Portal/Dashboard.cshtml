@@ -12,17 +12,15 @@
 }
 
 <!-- Greeting Banner -->
-<div class="p-4 mb-4 rounded-3"
-     style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
-    <div class="d-flex align-items-center gap-4">
-        <div class="rounded-circle bg-secondary d-inline-flex align-items-center
-                    justify-content-center fw-bold fs-2 flex-shrink-0"
-             style="width:75px; height:75px; color:#ffffff;">
+<div class="gymora-card mb-4">
+    <div class="p-4 d-flex align-items-center gap-4">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+             style="width:75px; height:75px; font-size:28px; background:var(--gymora-primary); color:#FFFFFF;">
             @Model.Initials
         </div>
         <div>
-            <h3 class="mb-1 fw-bold" style="color:#ffffff;">Welcome back, @Model.FullName!</h3>
-            <p class="mb-0" style="color:rgba(255,255,255,0.75);">
+            <h3 class="mb-1 fw-bold" style="color:var(--gymora-text);">Welcome back, @Model.FullName!</h3>
+            <p class="mb-0" style="color:var(--gymora-muted);">
                 <i class="bi bi-calendar3"></i>
                 Member since @(Model.JoinDate.HasValue ? Model.JoinDate.Value.ToString("MMMM yyyy") : "N/A")
             </p>
@@ -33,62 +31,60 @@
 <div class="row g-4">
     <!-- Membership Status -->
     <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-patch-check-fill text-success" style="font-size: 2.5rem;"></i>
-                <h5 class="mt-3 fw-bold">Membership Status</h5>
-                <span class="badge bg-success rounded-pill fs-6 px-4 py-2 mt-2">
-                    ✓ Active
-                </span>
-                <p class="text-muted small mt-3 mb-0">Your membership is active.</p>
-            </div>
+        <div class="gymora-card h-100 text-center py-4">
+            <i class="bi bi-patch-check-fill d-block mb-2" style="font-size: 2.5rem; color: var(--gymora-secondary);"></i>
+            <div class="gymora-card-title mt-3 mb-2">Membership Status</div>
+            <span class="gymora-badge success mt-2 d-inline-block">
+                ✓ Active
+            </span>
+            <p class="text-muted small mt-3 mb-0">Your membership is active.</p>
         </div>
     </div>
 
     <!-- Profile Summary -->
     <div class="col-md-8">
-        <div class="card shadow-sm h-100">
-            <div class="card-header fw-bold">
+        <div class="gymora-card h-100">
+            <div class="gymora-card-title mb-3">
                 <i class="bi bi-person-lines-fill"></i> Profile Summary
             </div>
-            <div class="card-body">
+            <div>
                 <ul class="list-unstyled mb-3">
                     <li class="mb-2">
-                        <i class="bi bi-person text-primary me-2"></i>
+                        <i class="bi bi-person me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Name:</strong> @Model.FullName
                     </li>
                     <li class="mb-2">
-                        <i class="bi bi-envelope text-primary me-2"></i>
+                        <i class="bi bi-envelope me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Email:</strong> @Model.Email
                     </li>
                     <li class="mb-2">
-                        <i class="bi bi-telephone text-primary me-2"></i>
+                        <i class="bi bi-telephone me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Phone:</strong> @(Model.PhoneNumber ?? "—")
                     </li>
                     <li class="mb-2">
-                        <i class="bi bi-calendar-check text-primary me-2"></i>
+                        <i class="bi bi-calendar-check me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Join Date:</strong>
                         @(Model.JoinDate.HasValue ? Model.JoinDate.Value.ToString("dd MMM yyyy") : "—")
                     </li>
                     <li class="mb-2">
-                        <i class="bi bi-card-checklist text-primary me-2"></i>
+                        <i class="bi bi-card-checklist me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Current Plan:</strong> @(Model.CurrentPlanName ?? "—")
                     </li>
                     <li class="mb-2">
-                        <i class="bi bi-hourglass-split text-primary me-2"></i>
+                        <i class="bi bi-hourglass-split me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Plan Expiry:</strong>
                         @(Model.PlanExpiryDate.HasValue ? Model.PlanExpiryDate.Value.ToString("dd MMM yyyy") : "—")
                     </li>
                     @if (!string.IsNullOrWhiteSpace(Model.FitnessGoals))
                     {
                         <li class="mb-2">
-                            <i class="bi bi-trophy text-primary me-2"></i>
+                            <i class="bi bi-trophy me-2" style="color:var(--gymora-primary);"></i>
                             <strong>Fitness Goals:</strong> @Model.FitnessGoals
                         </li>
                     }
                 </ul>
                 <a asp-area="Member" asp-controller="Portal" asp-action="EditProfile"
-                   class="btn btn-primary btn-sm">
+                   class="gymora-btn-primary d-inline-flex align-items-center gap-2">
                     <i class="bi bi-pencil"></i> Edit My Profile
                 </a>
             </div>
@@ -102,23 +98,17 @@
         <h5 class="fw-bold text-muted mb-3">Quick Links</h5>
     </div>
     <div class="col-md-3">
-        <div class="card text-center py-4 border-0 opacity-75"
-             style="background: var(--gymora-surface-2);">
-            <div class="card-body">
-                <i class="bi bi-calendar-check text-secondary" style="font-size: 2rem;"></i>
-                <p class="mt-2 fw-semibold mb-0">My Attendance</p>
-                <small class="text-muted">Coming soon</small>
-            </div>
+        <div class="gymora-card text-center py-4 opacity-75 h-100">
+            <i class="bi bi-calendar-check text-secondary d-block mb-2" style="font-size: 2rem;"></i>
+            <p class="mt-2 fw-semibold mb-0" style="color:var(--gymora-text);">My Attendance</p>
+            <small class="text-muted">Coming soon</small>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center py-4 border-0 opacity-75"
-             style="background: var(--gymora-surface-2);">
-            <div class="card-body">
-                <i class="bi bi-receipt text-secondary" style="font-size: 2rem;"></i>
-                <p class="mt-2 fw-semibold mb-0">My Payments</p>
-                <small class="text-muted">Coming soon</small>
-            </div>
+        <div class="gymora-card text-center py-4 opacity-75 h-100">
+            <i class="bi bi-receipt text-secondary d-block mb-2" style="font-size: 2rem;"></i>
+            <p class="mt-2 fw-semibold mb-0" style="color:var(--gymora-text);">My Payments</p>
+            <small class="text-muted">Coming soon</small>
         </div>
     </div>
 </div>
