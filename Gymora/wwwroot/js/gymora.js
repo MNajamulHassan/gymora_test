@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (collapseTimer) clearTimeout(collapseTimer);
       collapseTimer = setTimeout(function () {
         if (!isHoverSidebar) setCollapsed(true);
-      }, 300);
+      }, 100);
     }
 
     /* Collapse when user interacts with main content */
