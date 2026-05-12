@@ -11,6 +11,7 @@ namespace Gymora.Data
 
         public DbSet<Tenant> Tenants => Set<Tenant>();
         public DbSet<MembershipPlan> MembershipPlans => Set<MembershipPlan>();
+        public DbSet<Trainer> Trainers => Set<Trainer>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -59,6 +60,19 @@ namespace Gymora.Data
                  .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasIndex(p => new { p.TenantId, p.PlanName });
+                e.HasOne(p => p.AssignedTrainer)
+                 .WithMany()
+                 .HasForeignKey(p => p.AssignedTrainerId)
+                 .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            builder.Entity<Trainer>(e =>
+            {
+                e.HasKey(t => t.TrainerId);
+                e.Property(t => t.FullName).HasMaxLength(200).IsRequired();
+                e.Property(t => t.Specialization).HasMaxLength(200);
+                e.Property(t => t.PhoneNumber).HasMaxLength(30);
+                e.HasIndex(t => new { t.TenantId, t.FullName });
             });
 
             // Seed demo gym tenant

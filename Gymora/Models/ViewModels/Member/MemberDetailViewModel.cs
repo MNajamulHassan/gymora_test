@@ -21,6 +21,7 @@ namespace Gymora.Models.ViewModels.Member
         public DateTime? PlanExpiryDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? Role { get; set; }
+        public string MemberCode => "GYM-" + Id.Substring(0, 8).ToUpper();
 
         public string Initials
         {

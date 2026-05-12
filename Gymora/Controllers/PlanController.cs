@@ -26,7 +26,7 @@ namespace Gymora.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = await _planService.GetCreateModelAsync();
+            var model = await _planService.GetCreateModelAsync(DemoTenantId);
             return View(model);
         }
 
@@ -35,7 +35,10 @@ namespace Gymora.Controllers
         public async Task<IActionResult> Create(PlanFormViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                model.ActiveTrainers = (await _planService.GetCreateModelAsync(DemoTenantId)).ActiveTrainers;
                 return View(model);
+            }
 
             var (success, error) = await _planService.CreateAsync(model, DemoTenantId);
             if (success)
@@ -45,6 +48,7 @@ namespace Gymora.Controllers
             }
 
             ModelState.AddModelError(string.Empty, error);
+            model.ActiveTrainers = (await _planService.GetCreateModelAsync(DemoTenantId)).ActiveTrainers;
             return View(model);
         }
 
@@ -63,7 +67,10 @@ namespace Gymora.Controllers
             model.PlanId = id;
 
             if (!ModelState.IsValid)
+            {
+                model.ActiveTrainers = (await _planService.GetCreateModelAsync(DemoTenantId)).ActiveTrainers;
                 return View(model);
+            }
 
             var (success, error) = await _planService.UpdateAsync(model, DemoTenantId);
             if (success)
@@ -73,6 +80,7 @@ namespace Gymora.Controllers
             }
 
             ModelState.AddModelError(string.Empty, error);
+            model.ActiveTrainers = (await _planService.GetCreateModelAsync(DemoTenantId)).ActiveTrainers;
             return View(model);
         }
 

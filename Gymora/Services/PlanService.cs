@@ -2,6 +2,7 @@ using Gymora.Data;
 using Gymora.Data.Entities;
 using Gymora.Models.ViewModels.Plan;
 using Gymora.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gymora.Services
@@ -41,29 +42,43 @@ namespace Gymora.Services
             return new PlanListViewModel { Plans = plans, StatusFilter = statusFilter };
         }
 
-        public Task<PlanFormViewModel> GetCreateModelAsync()
+        public async Task<PlanFormViewModel> GetCreateModelAsync(Guid tenantId)
         {
-            return Task.FromResult(new PlanFormViewModel
+            return new PlanFormViewModel
             {
                 IsActive = true,
-                DurationDays = 30
-            });
+                DurationDays = 30,
+                DurationPreset = "30",
+                MaxMembers = 1,
+                ActiveTrainers = await GetActiveTrainerSelectListAsync(tenantId)
+            };
         }
 
         public async Task<PlanFormViewModel?> GetEditModelAsync(Guid planId, Guid tenantId)
         {
-            return await _db.MembershipPlans
+            var model = await _db.MembershipPlans
                 .Where(p => p.PlanId == planId && p.TenantId == tenantId)
                 .Select(p => new PlanFormViewModel
                 {
                     PlanId = p.PlanId,
                     PlanName = p.PlanName,
                     DurationDays = p.DurationDays,
+                    DurationPreset = GetDurationPreset(p.DurationDays),
+                    AssignedTrainerId = p.AssignedTrainerId,
+                    MaxMembers = p.MaxMembers,
                     Price = p.Price,
                     Description = p.Description,
-                    IsActive = p.IsActive
+                    IsActive = p.IsActive,
+                    ActiveTrainers = new List<SelectListItem>()
                 })
                 .FirstOrDefaultAsync();
+
+            if (model != null)
+            {
+                model.ActiveTrainers = await GetActiveTrainerSelectListAsync(tenantId);
+            }
+
+            return model;
         }
 
         public async Task<(bool Success, string Error)> CreateAsync(PlanFormViewModel model, Guid tenantId)
@@ -81,6 +96,8 @@ namespace Gymora.Services
                 TenantId = tenantId,
                 PlanName = model.PlanName.Trim(),
                 DurationDays = model.DurationDays,
+                AssignedTrainerId = model.AssignedTrainerId,
+                MaxMembers = model.MaxMembers,
                 Price = model.Price,
                 Description = model.Description?.Trim(),
                 IsActive = model.IsActive,
@@ -113,6 +130,8 @@ namespace Gymora.Services
 
             plan.PlanName = model.PlanName.Trim();
             plan.DurationDays = model.DurationDays;
+            plan.AssignedTrainerId = model.AssignedTrainerId;
+            plan.MaxMembers = model.MaxMembers;
             plan.Price = model.Price;
             plan.Description = model.Description?.Trim();
             plan.IsActive = model.IsActive;
@@ -154,5 +173,28 @@ namespace Gymora.Services
 
             return (true, string.Empty);
         }
+
+        private async Task<List<SelectListItem>> GetActiveTrainerSelectListAsync(Guid tenantId)
+        {
+            return await _db.Trainers
+                .Where(t => t.TenantId == tenantId && t.IsActive)
+                .OrderBy(t => t.FullName)
+                .Select(t => new SelectListItem
+                {
+                    Value = t.TrainerId.ToString(),
+                    Text = t.FullName
+                })
+                .ToListAsync();
+        }
+
+        private static string GetDurationPreset(int days) => days switch
+        {
+            1 => "1",
+            7 => "7",
+            30 => "30",
+            180 => "180",
+            365 => "365",
+            _ => "custom"
+        };
     }
 }

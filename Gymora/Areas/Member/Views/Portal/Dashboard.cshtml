@@ -20,6 +20,7 @@
         </div>
         <div>
             <h3 class="mb-1 fw-bold" style="color:var(--gymora-text);">Welcome back, @Model.FullName!</h3>
+            <span class="gymora-badge" style="background:var(--gymora-primary-dim);color:var(--gymora-primary);">@Model.MemberCode</span>
             <p class="mb-0" style="color:var(--gymora-muted);">
                 <i class="bi bi-calendar3"></i>
                 Member since @(Model.JoinDate.HasValue ? Model.JoinDate.Value.ToString("MMMM yyyy") : "N/A")
@@ -99,6 +100,11 @@
                     <li class="mb-2">
                         <i class="bi bi-card-checklist me-2" style="color:var(--gymora-primary);"></i>
                         <strong>Current Plan:</strong> @(Model.CurrentPlanName ?? "—")
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-calendar-plus me-2" style="color:var(--gymora-primary);"></i>
+                        <strong>Plan Started:</strong>
+                        @(Model.PlanStartDate.HasValue ? Model.PlanStartDate.Value.ToString("dd MMM yyyy") : "—")
                     </li>
                     <li class="mb-2">
                         <i class="bi bi-hourglass-split me-2" style="color:var(--gymora-primary);"></i>

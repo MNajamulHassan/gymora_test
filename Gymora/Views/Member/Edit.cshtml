@@ -34,7 +34,7 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="PhoneNumber" class="gymora-form-label"></label>
-                        <input asp-for="PhoneNumber" class="form-control" />
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" placeholder="+92XXXXXXXXXX" pattern="^\+92[0-9]{10}$" />
                         <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">

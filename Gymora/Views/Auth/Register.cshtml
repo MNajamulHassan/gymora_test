@@ -46,7 +46,7 @@
                         </div>
                         <div class="mb-3">
                             <label asp-for="PhoneNumber" class="gymora-form-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="+92 300 0000000" />
+                            <input asp-for="PhoneNumber" class="form-control" type="tel" placeholder="+92XXXXXXXXXX" pattern="^\+92[0-9]{10}$" />
                             <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                         </div>
                         <div class="mb-3">
@@ -70,12 +70,18 @@
                         <div class="mb-3">
                             <label asp-for="Password" class="gymora-form-label"></label>
                             <div class="input-group">
-                                <input asp-for="Password" class="form-control" id="regPasswordInput" placeholder="Minimum 6 characters" autocomplete="new-password" />
-                                <button type="button" class="input-group-text" onclick="gymoraTogglePassword('regPasswordInput', 'regPasswordIcon')" style="cursor:pointer;border-left:none;">
+                                <input asp-for="Password" class="form-control" id="Password" placeholder="Minimum 6 characters" autocomplete="new-password" />
+                                <button type="button" class="input-group-text" onclick="gymoraTogglePassword('Password', 'regPasswordIcon')" style="cursor:pointer;border-left:none;">
                                     <i class="bi bi-eye" id="regPasswordIcon"></i>
                                 </button>
                             </div>
                             <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div id="pwdRules" class="mb-2 mt-1" style="font-size:12px;line-height:2;">
+                          <div id="rule-len" class="text-danger"><i class="bi bi-x-circle-fill"></i> At least 8 characters</div>
+                          <div id="rule-upper" class="text-danger"><i class="bi bi-x-circle-fill"></i> At least 1 uppercase letter</div>
+                          <div id="rule-digit" class="text-danger"><i class="bi bi-x-circle-fill"></i> At least 1 number</div>
+                          <div id="rule-special" class="text-danger"><i class="bi bi-x-circle-fill"></i> At least 1 special character (!@#$...)</div>
                         </div>
                         <div class="mb-3">
                             <label asp-for="ConfirmPassword" class="gymora-form-label"></label>
@@ -149,5 +155,17 @@
                 document.getElementById('optionalChevron').className = 'bi bi-chevron-down';
             });
         }
+        document.getElementById('Password')?.addEventListener('input', function() {
+            const v = this.value;
+            const check = (id, ok) => {
+                const el = document.getElementById(id);
+                el.className = ok ? 'text-success' : 'text-danger';
+                el.querySelector('i').className = ok ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill';
+            };
+            check('rule-len', v.length >= 8);
+            check('rule-upper', /[A-Z]/.test(v));
+            check('rule-digit', /[0-9]/.test(v));
+            check('rule-special', /[^A-Za-z0-9]/.test(v));
+        });
     </script>
 }

@@ -25,7 +25,18 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="DurationDays" class="gymora-form-label"></label>
-                    <input asp-for="DurationDays" class="form-control" />
+                    <input asp-for="DurationPreset" type="hidden" />
+                    <select id="durationPreset" class="form-select gymora-input mb-2">
+                        <option value="1">1 Day</option>
+                        <option value="7">1 Week</option>
+                        <option value="30">1 Month</option>
+                        <option value="180">6 Months</option>
+                        <option value="365">1 Year</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <div id="customDays" style="display:none">
+                        <input asp-for="DurationDays" class="form-control gymora-input" placeholder="Enter days" />
+                    </div>
                     <span asp-validation-for="DurationDays" class="text-danger small"></span>
                     <div class="form-text" style="color: var(--gymora-muted); font-size: 12px;">Enter the number of days (e.g. 30 = one month, 365 = one year)</div>
                 </div>
@@ -34,6 +45,19 @@
                     <input asp-for="Price" class="form-control" />
                     <span asp-validation-for="Price" class="text-danger small"></span>
                     <div class="form-text" style="color: var(--gymora-muted); font-size: 12px;">Amount in PKR (e.g. 3000)</div>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="AssignedTrainerId" class="gymora-form-label"></label>
+                    <select asp-for="AssignedTrainerId" asp-items="Model.ActiveTrainers" class="form-select gymora-input">
+                        <option value="">-- Select trainer --</option>
+                    </select>
+                    <span asp-validation-for="AssignedTrainerId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="MaxMembers" class="gymora-form-label"></label>
+                    <input asp-for="MaxMembers" class="form-control gymora-input" type="number" min="1" max="20" />
+                    <span asp-validation-for="MaxMembers" class="text-danger small"></span>
+                    <div class="form-text" style="color: var(--gymora-muted); font-size: 12px;">Max Members (1=individual, 2=duo, etc.)</div>
                 </div>
             </div>
             <div class="mb-3 mt-3">
@@ -60,4 +84,29 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const presetEl = document.getElementById('durationPreset');
+            const daysEl = document.getElementById('DurationDays');
+            const customWrap = document.getElementById('customDays');
+            const initialPreset = '@Model.DurationPreset';
+            presetEl.value = initialPreset || 'custom';
+
+            const applyPreset = () => {
+                const v = presetEl.value;
+                document.getElementById('DurationPreset').value = v;
+                if (v === 'custom') {
+                    customWrap.style.display = '';
+                    daysEl.type = 'number';
+                } else {
+                    customWrap.style.display = 'none';
+                    daysEl.type = 'hidden';
+                    daysEl.value = v;
+                }
+            };
+
+            presetEl.addEventListener('change', applyPreset);
+            applyPreset();
+        })();
+    </script>
 }

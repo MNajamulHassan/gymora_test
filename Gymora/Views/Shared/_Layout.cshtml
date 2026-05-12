@@ -44,6 +44,7 @@
         bool isHomeActive    = false;
         bool isMembersActive = false;
         bool isPlansActive   = false;
+        bool isTrainersActive = false;
         bool isProfileActive = false;
 
         if (User.IsInRole("GymOwner") || User.IsInRole("Receptionist"))
@@ -51,6 +52,7 @@
             isHomeActive    = currentController == "Dashboard" && string.IsNullOrEmpty(currentArea);
             isMembersActive = currentController == "Member"    && string.IsNullOrEmpty(currentArea);
             isPlansActive   = currentController == "Plan"      && string.IsNullOrEmpty(currentArea);
+            isTrainersActive = currentController == "Trainer"  && string.IsNullOrEmpty(currentArea);
         }
         else if (User.IsInRole("Member"))
         {
@@ -112,6 +114,11 @@
                            asp-controller="Plan" asp-action="Index" data-label="Plans">
                             <i class="bi bi-card-list"></i>
                             <span class="gymora-nav-link-text">Membership Plans</span>
+                        </a>
+                        <a class="gymora-nav-link @(isTrainersActive ? "active" : "")"
+                           asp-controller="Trainer" asp-action="Index" data-label="Trainers">
+                            <i class="bi bi-person-workspace"></i>
+                            <span class="gymora-nav-link-text">Trainers</span>
                         </a>
                     }
                     <a class="gymora-nav-link coming-soon" href="#" tabindex="-1" aria-disabled="true" data-label="Attendance"

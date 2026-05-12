@@ -17,6 +17,11 @@ namespace Gymora.Data.Entities
         [Range(1, 3650)]
         public int DurationDays { get; set; }
 
+        public Guid? AssignedTrainerId { get; set; }
+        public Trainer? AssignedTrainer { get; set; }
+
+        public int MaxMembers { get; set; } = 1;
+
         [Range(0, 999999)]
         public decimal Price { get; set; }
 
